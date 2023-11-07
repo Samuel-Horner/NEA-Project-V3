@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <link rel="stylesheet" href="global_style.css">
+    <link rel="stylesheet" href="editor_style.css">
+    <script src="lib/codemirror.js"></script>
+    <script src="lib/clike.js"></script>
+    <script src="lib/matchbrackets.js"></script>
+    <script src="engine.js"></script>
+    <script src="editor_container.js"></script>
+    <title>Editor</title>
+</head>
+<body>
+    <div id="header">
+        Header
+    </div>
+    <div id="content">
+        <div id="editor_controls" class="flex_item">
+            <canvas id="glScreen"></canvas>
+            <div id="debug_info">
+                <p id="performance_info"></p>
+                <p id="uniform_info"></p>
+            </div>
+            <div>
+                <button onclick="runCode()">Run Code</button>
+                <button onclick="debugInfo()">Info</button>
+            </div>
+            <div class="slider-container">
+                <input type="range" class="slider" id="resolution_slider" min="100" max="2000" value="500" oninput="resChange()">
+                <p class="inline-label" id="resolution_display">500 px</p>
+            </div>
+            <div>
+                <button onclick="saveCode()">Save Code</button>
+            </div>
+        </div>
+        <div id="editor_master_container" class="flex_item"> 
+            <div id="editor_tabs">
+                <span class="span-button no-highlight" onclick="fragmentTab()">Fragment</span>
+                <span class="span-button no-highlight" onclick="vertexTab()">Vertex</span>
+                <span class="span-button no-highlight" onclick="verticesTab()">Vertices</span>
+                <span class="span-button no-highlight" onclick="indicesTab()">Indices</span>
+            </div>
+            <div id="editor_container"></div>
+        </div>
+    </div>
+
+    <script src="editor.js"></script>
+</body>
+</html>

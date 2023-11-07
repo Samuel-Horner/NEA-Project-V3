@@ -1,0 +1,19 @@
+#content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    padding-top: 2rem;
+}
+
+#glScreen{
+    border: 1px;
+    border-style: solid;
+    height: 30vw;
+}
+
+#header {
+    padding: 0.5rem;
+    background-color: gray;
+}

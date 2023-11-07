@@ -1,0 +1,76 @@
+body {
+    display: flex;
+    flex-direction: column;
+    gap:0;
+}
+
+#content {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    gap: 1rem;
+    flex:1;
+}
+
+#header {
+    padding: 0.5rem;
+    background-color: gray;
+}
+
+#editor_master_container{
+    flex-grow: 2;
+    width: 60%;
+    text-align: left;
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px;
+    border-style: solid;
+}
+
+#editor_tabs {
+    display: flex;
+    align-items: center;
+    border-bottom-style: solid;
+    border-bottom-color: #dddddd;
+}
+
+.span-button {
+    position: relative;
+    padding:0.25rem;
+    background-color: #f7f7f7;
+    border-top-right-radius: 5px;
+}
+
+.span-button:hover{
+    background-color: #dddddd;
+}
+
+.span-button:active {
+    background-color: white;
+}
+
+#debug_info {
+    position:absolute;
+    left: 1rem;
+    top: 1rem;
+    background-color: white;
+    padding: 0.1rem;
+    text-align: left;
+}
+
+#editor_controls {
+    margin-top: 0.5rem;
+    margin-left: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.CodeMirror {
+    height: 100%;
+    width: 100%;
+}
+#glScreen{
+    border: 1px;
+    border-style: solid;
+    width: 40vw;
+}
