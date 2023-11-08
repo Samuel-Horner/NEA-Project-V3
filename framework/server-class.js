@@ -59,12 +59,12 @@ class Server {
                 res.end(tempResource.content);
             }
         }
-    }
+    } // Handles get requests and sets response
 
     static error(res, code){
         res.writeHead(code);
         res.end();
-    }
+    } // Generice error method to respond to client
 
     run () {
         this.publicFiles = Server.recursiveReadDir('./public/');
@@ -74,6 +74,17 @@ class Server {
             switch (req.method){
                 case 'GET':
                     Server.getResource(res, this.publicFiles, req.url);
+                    break;
+                case 'POST':
+                    // Place holder - should instead go to DB management
+                    // https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction
+                    let body = [];
+                    req.on('data', chunk => {
+                        body.push(chunk);
+                    }).on('end', () => {
+                        body = Buffer.concat(body).toString();
+                        res.end(body);
+                    });
                     break;
                 default:
                     Server.error(res, 405);
