@@ -39,12 +39,17 @@ class Server {
                 return 'text/html';
             case 'css':
                 return 'text/css';
+            case 'png':
+                return 'image/png'
             default:    
                 return null
         }
     } // Converts file extensions into appropriate MIME type
 
     static getResource(res, resourceDirectory, url){
+        if (url == '/'){
+            url = '/index.html'; // Placeholder
+        }
         let urlArray = url.split('/').slice(1);
         let tempResource = Server.recursiveObjSearch(resourceDirectory, urlArray);
         if (!tempResource) {
@@ -62,6 +67,7 @@ class Server {
     } // Handles get requests and sets response
 
     static error(res, code){
+        console.log(`Error ${code}`); // DEBUG
         res.writeHead(code);
         res.end();
     } // Generice error method to respond to client
@@ -76,7 +82,7 @@ class Server {
                     Server.getResource(res, this.publicFiles, req.url);
                     break;
                 case 'POST':
-                    // Place holder - should instead go to DB management
+                    // Placeholder - should instead go to DB management
                     // https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction
                     let body = [];
                     req.on('data', chunk => {
