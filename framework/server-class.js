@@ -23,11 +23,12 @@ class Server {
     } // Recursive function to scan and store all files in public
 
     static recursiveObjSearch(obj, searchArray){
+        try { var returnObj = obj[searchArray[0]];}
+        catch { return null;}
         if (searchArray.length == 1){
-            try {return obj[searchArray[0]];}
-            catch {return null;}
+            return returnObj
         } else {
-            return Server.recursiveObjSearch(obj[searchArray[0]], searchArray.slice(1));
+            return Server.recursiveObjSearch(returnObj, searchArray.slice(1));
         }
     } // Recursive function to get data from publicFiles
 
@@ -48,7 +49,7 @@ class Server {
 
     static getResource(res, resourceDirectory, url){
         if (url == '/'){
-            url = '/index.html'; // Placeholder
+            url = '/editor.html'; // Placeholder
         }
         let urlArray = url.split('/').slice(1);
         let tempResource = Server.recursiveObjSearch(resourceDirectory, urlArray);
