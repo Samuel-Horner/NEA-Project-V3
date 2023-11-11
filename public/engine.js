@@ -94,8 +94,8 @@ void main() {
     }
 
     initProgram(fragment_source, vertex_source){
-        const vertex_shader = GLCanvas.loadShader(this.gl, this.gl.VERTEX_SHADER, vertex_source);
-        const fragment_shader = GLCanvas.loadShader(this.gl, this.gl.FRAGMENT_SHADER, fragment_source);
+        const vertex_shader = GLCanvas.#loadShader(this.gl, this.gl.VERTEX_SHADER, vertex_source);
+        const fragment_shader = GLCanvas.#loadShader(this.gl, this.gl.FRAGMENT_SHADER, fragment_source);
         const shader_program = this.gl.createProgram();
         this.gl.attachShader(shader_program, vertex_shader);
         this.gl.attachShader(shader_program, fragment_shader);
@@ -211,12 +211,13 @@ void main() {
         }
     }
 
-    static loadShader(gl, shader_type, shader_source){
+    static #loadShader(gl, shader_type, shader_source){
         const shader = gl.createShader(shader_type);
         gl.shaderSource(shader, shader_source);
         gl.compileShader(shader);
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)){
-            alert(`${shader_type == gl.VERTEX_SHADER ? "The vertex shader" : "The fragment shader"} could not be compiled:\n${gl.getShaderInfoLog(shader)}`);
+            alert(`${shader_type == gl.VERTEX_SHADER ? "The vertex shader" : "The fragment shader"} 
+                    could not be compiled:\n${gl.getShaderInfoLog(shader)}`);
             gl.deleteShader(shader);
             return null;
         }
