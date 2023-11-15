@@ -1,5 +1,5 @@
 const Server = require('./framework/server-class'); // Framework class
-require('./database/init').initDB(); // Initialises DB
+require('./database/init.js').initDB(); // Initialises DB
 
 let mainServer = new Server.Server('localhost','8080',{});
 mainServer.run();
