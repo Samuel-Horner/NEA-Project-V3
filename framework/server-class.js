@@ -49,7 +49,7 @@ class Server {
 
     static getResource(res, resourceDirectory, url){
         if (url == '/'){
-            url = '/editor.html'; // Placeholder
+            url = '/editor.html'; // Placeholder index page
         }
         let urlArray = url.split('/').slice(1);
         let tempResource = Server.recursiveObjSearch(resourceDirectory, urlArray);
