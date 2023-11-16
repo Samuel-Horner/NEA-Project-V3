@@ -1,12 +1,36 @@
 const http = require('node:http'); // set to https later
 const fs = require('node:fs');
 const path = require('node:path');
+const dbManagement = require('../database/db-access');
+
+class Database extends dbManagement.dbManager { // inherits dbManagement.dbManager
+    constructor() {
+        super('/dev.db'); // PLACEHOLDER name for PROD DB
+    }
+
+    async createAccount (email, password, res){
+        await this._dbExec('INSERT INTO accountTbl (email, password) VALUES ($email,$password)', {
+            $email : email,
+            $password : password    
+        }).then((result) => {
+            if (result.changes == 1){ 
+                res.writeHead(200, {'Content-Type':'text/html'});
+                res.end('it worked');
+            }
+        }).catch((err) => {
+            console.log(err);
+            res.writeHead(200, {'Content-Type':'text/html'});
+            res.end('it aint work');
+        });
+    }
+}
 
 class Server {
     constructor (hostname, port, options){
         this.hostname = hostname;
         this.port = port
         this.options = options;
+        this.dbAccess = new Database();
     } // Server constructor
 
     static recursiveReadDir(filePath){
@@ -71,12 +95,20 @@ class Server {
         console.log(`Error ${code}`); // DEBUG
         res.writeHead(code);
         res.end();
-    } // Generice error method to respond to client
+    } // Generic error method to respond to client
 
     run () {
         this.publicFiles = Server.recursiveReadDir('./public/');
 
         this.server = http.createServer(this.options, (req, res) => {
+            req.on('error', (err) => {
+                console.log(err);
+                Server.error(res, 400);
+            });
+            res.on('error', (err) => {
+                console.log(err);
+                Server.error(res, 400);
+            })
             console.log({'method':req.method,'url':req.url});
             switch (req.method){
                 case 'GET':
@@ -86,10 +118,13 @@ class Server {
                     // Placeholder - should instead go to DB management
                     // https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction
                     let body = [];
-                    req.on('data', chunk => {
+                    req.on('data', (chunk) => {
                         body.push(chunk);
                     }).on('end', () => {
                         body = Buffer.concat(body).toString();
+                        // Decode body here and do stuff
+                        // See URL package on node
+                        console.log(body);
                         res.end(body);
                     });
                     break;

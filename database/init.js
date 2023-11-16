@@ -6,21 +6,17 @@ async function initDB() {
         filename : __dirname + '/dev.db',
         driver: sqlite3.Database
     })
-    // db.on('trace', (data) => {
-    //     console.log(data);
-    // }); // Debug information
 
-    db.run(`CREATE TABLE IF NOT EXISTS accountTbl (
-            accountID INTEGER NOT NULL, 
-            username TEXT NOT NULL,
+    db.run(`CREATE TABLE IF NOT EXISTS accountTbl ( 
+            email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
-            PRIMARY KEY (accountID));`);
+            PRIMARY KEY (email));`);
     db.run(`CREATE TABLE IF NOT EXISTS projectTbl (
             projectID INTEGER NOT NULL UNIQUE,
-            accountID INTEGER NOT NULL,
+            email TEXT NOT NULL,
             projectName TEXT,
             PRIMARY KEY (projectID),
-            FOREIGN KEY (accountID) REFERENCES accountTbl(accountID));`);
+            FOREIGN KEY (email) REFERENCES accountTbl(email));`);
     db.run(`CREATE TABLE IF NOT EXISTS contentTbl (
             projectID INTEGER NOT NULL,
             type INTEGER NOT NULL,

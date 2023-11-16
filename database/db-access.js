@@ -1,50 +1,29 @@
-const sqlite3 = require('sqlite3');
+const sqlite3 = require('sqlite3').verbose();
 const sqlite = require('sqlite');
 
-// async function dbExec (query, params){
-//     sqlite.open({
-//         filename : './database/dev.db',
-//         mode: sqlite3.OPEN_READWRITE,
-//         driver: sqlite3.cached.Database
-//     })
-//     db.on('trace', (data) => {
-//         console.log(data);
-//     });
-
-//     const res = await db.run(query, params);
-    
-//     db.close();
-
-//     return res;
-// }
-
-// async function createAccount (username, password){
-//     console.log(await dbExec('INSERT INTO accountTbl (username, password) VALUES ($username, $password)', {$username : username, $password : password}));
-//     console.log(await dbExec('SELECT * FROM accountTbl WHERE accountID IS (1)', []));
-// }
-
 class dbManager {
-    constructor (dbPath){
-        return (async () => {
-            this.db = await sqlite.open({
-                filename : './database/dev.db',
-                mode: sqlite3.OPEN_READWRITE,
-                driver: sqlite3.cached.Database
-            })
-            this.db.on('trace', (data) => {
-                console.log(data);
-            });
-            return this;
-        });
+    constructor (dbPath) {
+        this.db = sqlite.open({
+            filename : __dirname + dbPath,
+            mode: sqlite3.OPEN_READWRITE,
+            driver: sqlite3.cached.Database
+        }).then((res) => {
+                res.on('trace', (data) => {
+                    console.log(data);
+                });
+                return res;
+        }).catch((err) => {
+            console.log('error in opening db');
+            console.log(err);
+            process.abort();
+        }); // Opens the DB - NOTE
+            // THIS IS ASYNC - but i cba to wait for it
+            // Essentially if a request is passed to this object AS it is created,
+            // or until however long it takes to open the db, it will fail.
     }
-
-    async dbExec(query, params) {
-        return this.db.run(query,params);
+    async _dbExec(sql, params) {
+        return await (await this.db).run(sql, params);
     }
-}
+} // Lil wrapper class for db operations
 
-let testObj = await new dbManager();
-await testObj.dbExec('INSERT INTO accountTbl (username, password) VALUES (jeff, testPasss);');
-
-// ASYNC HELL
-// WHY DID I DO THIS AHSKBZNGISXHBUGZJGNSDIJZHGCXGNSDOPIHCZBOSDOICZXHGOSDBUZCX
+module.exports = {dbManager};
