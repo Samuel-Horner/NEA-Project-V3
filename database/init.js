@@ -7,17 +7,17 @@ async function initDB() {
         driver: sqlite3.Database
     })
 
-    db.run(`CREATE TABLE IF NOT EXISTS accountTbl ( 
+    await db.run(`CREATE TABLE IF NOT EXISTS accountTbl ( 
             email TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
             PRIMARY KEY (email));`);
-    db.run(`CREATE TABLE IF NOT EXISTS projectTbl (
+    await db.run(`CREATE TABLE IF NOT EXISTS projectTbl (
             projectID INTEGER NOT NULL UNIQUE,
             email TEXT NOT NULL,
             projectName TEXT,
             PRIMARY KEY (projectID),
             FOREIGN KEY (email) REFERENCES accountTbl(email));`);
-    db.run(`CREATE TABLE IF NOT EXISTS contentTbl (
+    await db.run(`CREATE TABLE IF NOT EXISTS contentTbl (
             projectID INTEGER NOT NULL,
             type INTEGER NOT NULL,
             content TEXT,
