@@ -1,11 +1,11 @@
 const http = require('node:http'); // set to https later
 const fs = require('node:fs');
 const path = require('node:path');
-const dbManagement = require('../database/db-access');
+const dbManagement = require('../database/db-mgmt');
 
-class Database extends dbManagement.dbManager { // inherits dbManagement.dbManager
+class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.dbManager
     constructor() {
-        super('/dev.db'); // PLACEHOLDER name for PROD DB
+        super('/dev.db'); // PLACEHOLDER name for production db
     }
 
     async createAccount (email, password, res){
@@ -14,13 +14,19 @@ class Database extends dbManagement.dbManager { // inherits dbManagement.dbManag
             $password : password    
         }).then((result) => {
             if (result.changes == 1){ 
-                res.writeHead(200, {'Content-Type':'text/html'});
-                res.end('it worked');
+                res.writeHead(200, {'Content-Type':'application/json'});
+                res.end(JSON.stringify({
+                    error: null,
+                    stmtResult: result
+                }));
             }
         }).catch((err) => {
             console.log(err);
-            res.writeHead(200, {'Content-Type':'text/html'});
-            res.end('it aint work');
+            res.writeHead(200, {'Content-Type':'application/json'});
+            res.end(JSON.stringify({
+                error: err,
+                stmtResult: null
+            }));
         });
     }
 }
@@ -30,8 +36,11 @@ class Server {
         this.hostname = hostname;
         this.port = port
         this.options = options;
-        this.dbAccess = new Database();
     } // Server constructor
+
+    openDB () {
+        this.dbAccess = new DatabaseAccess();
+    } // Function to be called AFTER db is initialised
 
     static recursiveReadDir(filePath){
         let data = {}
@@ -91,6 +100,19 @@ class Server {
         }
     } // Handles get requests and sets response
 
+    postResourceJSON(res, body){
+        const reqBody = JSON.parse(body);
+        console.log(reqBody);
+        switch (reqBody.method) {
+            case 'create-account':
+                this.dbAccess.createAccount(reqBody.email, reqBody.password, res);
+                break;
+            default:
+                Server.error(res, 500);
+                break;  
+        }
+    } // Handles JSON encoded post requests
+
     static error(res, code){
         console.log(`Error ${code}`); // DEBUG
         res.writeHead(code);
@@ -115,17 +137,25 @@ class Server {
                     Server.getResource(res, this.publicFiles, req.url);
                     break;
                 case 'POST':
-                    // Placeholder - should instead go to DB management
+                    if (!this.dbAccess) {
+                        console.log('Tried to access DB before initialisation!');
+                        Server.error(res, 500); // DB is not initialised
+                        break;
+                    }
                     // https://nodejs.org/en/docs/guides/anatomy-of-an-http-transaction
                     let body = [];
                     req.on('data', (chunk) => {
                         body.push(chunk);
                     }).on('end', () => {
                         body = Buffer.concat(body).toString();
-                        // Decode body here and do stuff
-                        // See URL package on node
-                        console.log(body);
-                        res.end(body);
+                        switch (req.headers['content-type']) {
+                            case 'application/json':
+                                this.postResourceJSON(res, body);
+                                break;
+                            default:
+                                Server.error(res, 500);
+                                break;
+                        }
                     });
                     break;
                 default:

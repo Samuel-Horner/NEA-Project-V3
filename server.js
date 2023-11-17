@@ -1,13 +1,10 @@
 const Server = require('./framework/server-class'); // Framework class
 
-async function runServer () {
-    await require('./database/init.js').initDB(); // Initialises DB
-    // This is ASYNC - try not to do anything until it is done ig
-    let mainServer = new Server.Server('localhost','8080',{});
+let mainServer = new Server.Server('localhost','8080',{});
+require('./database/init.js').initDB().then((result) => {
+    mainServer.openDB();
     mainServer.run();
-}
-
-runServer();
+}); // Initialises DB and runs server
 
 /* TODO -
 1. Implement proper routing (making use of imported functions?) [server-class.js] --DONE--
