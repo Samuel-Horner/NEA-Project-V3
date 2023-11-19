@@ -7,16 +7,19 @@ async function initDB() {
         driver: sqlite3.Database
     })
 
-    await db.run(`CREATE TABLE IF NOT EXISTS accountTbl ( 
-            email TEXT NOT NULL UNIQUE,
+    await db.run(`CREATE TABLE IF NOT EXISTS accountTbl (
+            accountID INTEGER NOT NULL UNIQUE,
+            username TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
-            PRIMARY KEY (email));`);
+            PRIMARY KEY (accountID));`); // NOTE - technically email here should be the pk, as account id is redundant,
+            // however in the interest of privacy using the account email as the account identifier would be problematic
+            // in url encoded requests.
     await db.run(`CREATE TABLE IF NOT EXISTS projectTbl (
             projectID INTEGER NOT NULL UNIQUE,
-            email TEXT NOT NULL,
+            accountID INTEGER NOT NULL,
             projectName TEXT,
             PRIMARY KEY (projectID),
-            FOREIGN KEY (email) REFERENCES accountTbl(email));`);
+            FOREIGN KEY (accountID) REFERENCES accountTbl(accountID));`);
     await db.run(`CREATE TABLE IF NOT EXISTS contentTbl (
             projectID INTEGER NOT NULL,
             type INTEGER NOT NULL,

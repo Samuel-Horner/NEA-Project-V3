@@ -46,7 +46,6 @@ void main() {
     // Normalised Coords
     vec2 uv = gl_FragCoord.xy / u_res;
     // Output Frag Color
-    //gl_FragColor = vec4(cos(u_time), sin(u_time), sin(u_time + 3.14), 1.0);
     gl_FragColor = vec4(vColor, 1.);
 }`; // Default fragment shader
 

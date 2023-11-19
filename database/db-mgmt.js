@@ -17,13 +17,13 @@ class dbManager {
             console.log(err);
             process.abort();
         }); // Opens the DB - NOTE
-            // THIS IS ASYNC - but i cba to wait for it
+            // THIS IS ASYNC
             // Essentially if a request is passed to this object AS it is created,
             // or until however long it takes to open the db, it will fail.
     }
     async _dbExec(sql, params) {
         return await (await this.db).run(sql, params);
     }
-} // Lil wrapper class for db operations
+} // Wrapper class for db operations
 
 module.exports = {dbManager};

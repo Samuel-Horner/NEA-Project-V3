@@ -77,7 +77,7 @@ class Server {
         console.log(reqBody);
         switch (reqBody.method) {
             case 'create-account':
-                this.dbAccess.createAccount(reqBody.email, reqBody.password, res);
+                this.dbAccess.createAccount(reqBody.username, reqBody.password, res);
                 break;
             default:
                 Server.error(res, 500);
@@ -125,6 +125,7 @@ class Server {
                                 this.postResourceJSON(res, body);
                                 break;
                             default:
+                                console.log(body);
                                 Server.error(res, 500);
                                 break;
                         }

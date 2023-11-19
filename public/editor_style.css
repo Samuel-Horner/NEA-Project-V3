@@ -16,6 +16,11 @@ body {
 #header {
     padding: 0.5rem;
     background-color: gray;
+    text-align: right;
+}
+
+#account_icon {
+    width: 2rem;
 }
 
 #editor_master_container{
