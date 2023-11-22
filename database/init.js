@@ -11,6 +11,7 @@ async function initDB() {
             accountID INTEGER NOT NULL UNIQUE,
             username TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
+            salt TEXT NOT NULL,
             PRIMARY KEY (accountID));`); // NOTE - technically email here should be the pk, as account id is redundant,
             // however in the interest of privacy using the account email as the account identifier would be problematic
             // in url encoded requests. THEREFORE 2nf not 3nf

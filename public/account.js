@@ -59,7 +59,7 @@ async function submitCreateAccount(){
         if (result.error.errno == 19){
             modalOutput('An account with that username already exists.\nPlease try a different username.');
         } else if (result.error.errno == 0) {
-            modalOutput(result.error.errDsc);
+            modalOutput(result.error.errdsc);
         } else {
             modalOutput('UNKOWN ERROR - Account creation failed.');
         }
