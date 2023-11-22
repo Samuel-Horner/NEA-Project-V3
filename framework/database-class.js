@@ -42,11 +42,11 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
             $salt: hashInformation.salt
         }).then((result) => {
             if (result.changes == 1){ 
-                DatabaseAccess.writeResult(res, null, result, 200);
+                DatabaseAccess.writeResult(res, null, result, 200); // Success - created account
             }
         }).catch((err) => {
             console.log(err);
-            DatabaseAccess.writeResult(res, err, null, 200);
+            DatabaseAccess.writeResult(res, err, null, 200); // Fail - unknown
         });
     }
 
@@ -56,16 +56,16 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
         }).then((result) => {
             if (result){
                 if (DatabaseAccess.validatePassword(password, result.salt, result.password)){
-                    DatabaseAccess.writeResult(res, null, {accountID: result.accountID}, 200);
+                    DatabaseAccess.writeResult(res, null, {accountID: result.accountID}, 200); // Succes
                 } else {
-                    DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'Wrong password.'}, null, 200);
+                    DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'Wrong password.'}, null, 200); // Fail - wrong password
                 }
             } else {
-                DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'No account found.'}, null, 200);
+                DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'No account found.'}, null, 200); // Fail - no account with username
             }
         }).catch((err) => {
             console.log(err);
-            DatabaseAccess.writeResult(res, err, null, 200);
+            DatabaseAccess.writeResult(res, err, null, 200); // Fail - unkown
         });
     }
 }
