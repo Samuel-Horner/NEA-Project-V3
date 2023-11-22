@@ -24,6 +24,10 @@ class dbManager {
     async _dbExec(sql, params) {
         return await (await this.db).run(sql, params);
     }
+
+    async _dbGet(sql, params){
+        return await (await this.db).get(sql, params);
+    }
 } // Wrapper class for db operations
 
 module.exports = {dbManager};

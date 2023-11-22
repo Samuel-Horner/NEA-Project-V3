@@ -79,6 +79,9 @@ class Server {
             case 'create-account':
                 this.dbAccess.createAccount(reqBody.username, reqBody.password, res);
                 break;
+            case 'log-in':
+                this.dbAccess.login(reqBody.username,reqBody.password, res);
+                break;
             default:
                 Server.error(res, 500);
                 break;  

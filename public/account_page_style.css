@@ -50,3 +50,7 @@ body {
     border-color: black;
     border-width: 0.1rem;
 }
+
+#modal_output {
+    color: red;
+}
