@@ -18,22 +18,39 @@ const createAccountModalContent = `<h1>Please Create An Account</h1> <hr> <br>
 <button id="switch-mode" onclick="showLoginModal()">Sign In</button>
 <div id="modal_output"></div>`;
 
+const accountMgmtModalContent = `<h1>Account Management</h1> <hr> <br>
+<button onclick="logout()">Sign Out</button> <br> <br>
+<button onclick="showDeleteAccountModal()">Delete Account</button>`
+
+const deleteAccountModalContent = `<h1>Delete Account</h1> <hr> <br>
+<p>Deleting an account will permenantly delete all saved projects.</p>
+<label>Password:</label>
+<input type="password" id="password" /><br>
+<button onclick="deleteAccount()">Delete Account</button>
+<button onclick="showLoginModal()">Cancel</button>
+<div id="modal_output"></div>`;
+
 const modal = document.getElementById('login-modal');
 const modalContent = document.getElementById('login-modal-content');
+const projectList = document.getElementById('project-list-ul');
 
 let accountID = null; 
 
-if (!accountID) { // CHECK SESSION ID HERE
-    showLoginModal();
-}
+showLoginModal();
 
 function showLoginModal(){
-    modalContent.innerHTML = signInModalContent; // Sets content
+    if(!accountID){modalContent.innerHTML = signInModalContent;}// Sets content if not logged in
+    else{modalContent.innerHTML = accountMgmtModalContent;}
     modal.style.display = 'block'; // Shows sign-in modal
 }
 
 function showCreateAccountModal(){
     modalContent.innerHTML = createAccountModalContent; // Sets content
+    modal.style.display = 'block'; // Shows sign-in modal
+}
+
+function showDeleteAccountModal(){
+    modalContent.innerHTML = deleteAccountModalContent; // Sets content
     modal.style.display = 'block'; // Shows sign-in modal
 }
 
@@ -64,7 +81,6 @@ async function submitCreateAccount(){
             modalOutput('UNKOWN ERROR - Account creation failed.');
         }
     } else {
-        alert('Account created!');
         hideModals();
         saveAccountID(result.stmtResult.lastID);
     }
@@ -81,18 +97,73 @@ async function login(){
         if (result.error.errno == 0) {
             modalOutput(result.error.errdsc);
         } else {
-            modalOutput('UNKOWN ERROR - Account creation failed.');
+            modalOutput('UNKOWN ERROR - Sign in failed.');
         }
     } else {
-        alert('Succesfully logged in.');
         hideModals();
         saveAccountID(result.stmtResult.accountID);
     }
 }
 
+function logout(){
+    accountID = null;
+    loadProjects();
+    showLoginModal();
+}
+
+function deleteAccount(){
+    req(url = '/', {
+        method: 'delete-account',
+        accountID: accountID,
+        password: document.getElementById('password').value
+    }).then(res => {
+        if (res.error){
+            if (result.error.errno == 0) {
+                modalOutput(result.error.errdsc);
+            } else {
+                modalOutput('UNKOWN ERROR - Delete account failed.');
+            }
+        } else {
+            accountID = null;
+            loadProjects();
+            showLoginModal();
+        }
+    });
+}
+
 function saveAccountID(id){
     accountID = id;
-    console.log(id);
+    // Could do something with cookies here to make account info
+    // persist through pages, but not in project scope.
+    loadProjects();
+}
+
+function loadProjects(){
+    if (!accountID){
+        projectList.innerHTML = '';
+        return;
+    }
+    req(url = '/', {
+        method: 'get-projects',
+        accountID: accountID
+    }).then(res => {
+        console.log(res);
+        if (res.stmtResult.length == 0){
+            projectList.innerHTML = `Uh oh - looks like you dont have any saved projects!<br><a href='/editor.html'>Make a new project?</a>`
+            return;
+        }
+        res.stmtResult.forEach(project => {
+            projectList.innerHTML += projectListTemplate(project.projectName, project.projectID);
+        });
+    });
+}
+
+function projectListTemplate(projectName, projectID){
+    return `<li class="project-list-li" onclick="editProject(${projectID})">${projectName}</li>`;
+}
+
+function editProject(projectID){
+    console.log(projectID);
 }
 
 function modalOutput(output){

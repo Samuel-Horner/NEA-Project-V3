@@ -2,7 +2,7 @@ const Server = require('./framework/server-class'); // Framework class
 
 let mainServer = new Server.Server('localhost','8080',{});
 require('./database/init.js').initDB().then(() => {
-    mainServer.openDB();
+    mainServer.openDB(__dirname + '/database/dev.db'); // Placeholder db path for production db
     mainServer.run();
 }); // Initialises DB and runs server
 

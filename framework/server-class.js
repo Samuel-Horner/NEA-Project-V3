@@ -10,8 +10,8 @@ class Server {
         this.options = options;
     } // Server constructor
 
-    openDB () {
-        this.dbAccess = new dataBaseClass.DatabaseAccess();
+    openDB (db_path) {
+        this.dbAccess = new dataBaseClass.DatabaseAccess(db_path);
     } // Function to be called AFTER db is initialised
 
     static recursiveReadDir(filePath){
@@ -48,13 +48,13 @@ class Server {
             case 'png':
                 return 'image/png'
             default:    
-                return null
+                return 'text/html'
         }
     } // Converts file extensions into appropriate MIME type
 
     static getResource(res, resourceDirectory, url){
         if (url == '/'){
-            url = '/editor.html'; // Placeholder index page
+            url = '/account_page.html'; // Placeholder index page
         }
         let urlArray = url.split('/').slice(1);
         let tempResource = Server.recursiveObjSearch(resourceDirectory, urlArray);
@@ -81,6 +81,12 @@ class Server {
                 break;
             case 'log-in':
                 this.dbAccess.login(reqBody.username,reqBody.password, res);
+                break;
+            case 'get-projects':
+                this.dbAccess.getProjects(reqBody.accountID, res);
+                break;
+            case 'delete-account':
+                this.dbAccess.deleteAccount(reqBody.accountID, reqBody.password, res);
                 break;
             default:
                 Server.error(res, 500);

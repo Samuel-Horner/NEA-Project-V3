@@ -4,13 +4,14 @@ const sqlite = require('sqlite');
 class dbManager {
     constructor (dbPath) {
         this.db = sqlite.open({
-            filename : __dirname + dbPath,
+            filename : dbPath,
             mode: sqlite3.OPEN_READWRITE,
             driver: sqlite3.cached.Database
         }).then((res) => {
                 res.on('trace', (data) => {
                     console.log(data);
                 });
+                res.exec('PRAGMA foreign_keys = ON;'); // Enables foreign keys
                 return res;
         }).catch((err) => {
             console.log('error in opening db');
@@ -27,6 +28,10 @@ class dbManager {
 
     async _dbGet(sql, params){
         return await (await this.db).get(sql, params);
+    }
+
+    async _dbAll(sql, params){
+        return await (await this.db).all(sql, params);
     }
 } // Wrapper class for db operations
 

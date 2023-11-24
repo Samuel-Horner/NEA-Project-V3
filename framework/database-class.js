@@ -2,8 +2,8 @@ const dbManagement = require('../database/db-mgmt');
 const crypto = require('node:crypto');
 
 class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.dbManager
-    constructor() {
-        super('/dev.db'); // PLACEHOLDER name for production db
+    constructor(db_path) {
+        super(db_path); // PLACEHOLDER name for production db
     }
 
     static generateSalt(length){
@@ -62,6 +62,42 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
                 }
             } else {
                 DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'No account found.'}, null, 200); // Fail - no account with username
+            }
+        }).catch((err) => {
+            console.log(err);
+            DatabaseAccess.writeResult(res, err, null, 200); // Fail - unkown
+        });
+    }
+
+    async getProjects(accountID, res){
+        await this._dbAll(`SELECT projectName, projectID FROM projectTbl WHERE projectTbl.accountID = $accountID`, {
+            $accountID : accountID
+        }).then((result) => {
+            if (result){
+                DatabaseAccess.writeResult(res, null, result, 200);
+            } else {
+                DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'No projects found.'}, null, 200);
+            }
+        }).catch((err) => {
+            console.log(err);
+            DatabaseAccess.writeResult(res, err, null, 200); // Fail - unkown
+        });
+    }
+
+    async deleteAccount(accountID, password, res){
+        await this._dbGet('SELECT accountID, password, salt FROM accountTbl WHERE accountTbl.accountID = $accountID', {
+            $accountID: accountID
+        }).then((result) => {
+            if (result){
+                if (DatabaseAccess.validatePassword(password, result.salt, result.password)){
+                    this._dbExec('DELETE FROM accountTbl WHERE accountTbl.accountID = $accountID', {
+                        $accountID: accountID
+                    }).then((result) => {
+                        DatabaseAccess.writeResult(res, null, result, 200); // Succes
+                    });
+                } else {
+                    DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'Wrong password.'}, null, 200);
+                }
             }
         }).catch((err) => {
             console.log(err);
