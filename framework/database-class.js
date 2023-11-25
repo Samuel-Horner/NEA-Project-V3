@@ -36,7 +36,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
             return;
         }
         const hashInformation = DatabaseAccess.hash(password, DatabaseAccess.generateSalt(128)); 
-        await this._dbExec('INSERT INTO accountTbl (username, password, salt) VALUES ($username,$password,$salt)', {
+        await this._dbExec('INSERT INTO accountTbl (username, password, salt) VALUES ($username,$password,$salt);', {
             $username : username,
             $password : hashInformation.hashedValue,
             $salt: hashInformation.salt
@@ -51,7 +51,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
     }
 
     async login(username, password, res){
-        await this._dbGet('SELECT accountID, password, salt FROM accountTbl WHERE accountTbl.username = $username', {
+        await this._dbGet('SELECT accountID, password, salt FROM accountTbl WHERE accountTbl.username = $username;', {
             $username : username
         }).then((result) => {
             if (result){
@@ -70,7 +70,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
     }
 
     async getProjects(accountID, res){
-        await this._dbAll(`SELECT projectName, projectID FROM projectTbl WHERE projectTbl.accountID = $accountID`, {
+        await this._dbAll(`SELECT projectName, projectID FROM projectTbl WHERE projectTbl.accountID = $accountID;`, {
             $accountID : accountID
         }).then((result) => {
             if (result){
@@ -85,12 +85,12 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
     }
 
     async deleteAccount(accountID, password, res){
-        await this._dbGet('SELECT accountID, password, salt FROM accountTbl WHERE accountTbl.accountID = $accountID', {
+        await this._dbGet('SELECT accountID, password, salt FROM accountTbl WHERE accountTbl.accountID = $accountID;', {
             $accountID: accountID
         }).then((result) => {
             if (result){
                 if (DatabaseAccess.validatePassword(password, result.salt, result.password)){
-                    this._dbExec('DELETE FROM accountTbl WHERE accountTbl.accountID = $accountID', {
+                    this._dbExec('DELETE FROM accountTbl WHERE accountTbl.accountID = $accountID;', {
                         $accountID: accountID
                     }).then((result) => {
                         DatabaseAccess.writeResult(res, null, result, 200); // Succes
@@ -106,7 +106,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
     }
 
     async saveProject(username, password, project_name, project_content, res){
-        await this._dbGet('SELECT accountID, password, salt FROM accountTbl WHERE accountTbl.username = $username', {
+        await this._dbGet('SELECT accountID, password, salt FROM accountTbl WHERE accountTbl.username = $username;', {
             $username: username
         }).then((result) => {
             if (result){
@@ -120,7 +120,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
                         let projectID = result.lastID;
                         console.log(project_content);
                         project_content.forEach((element, index) => {
-                            this._dbExec('INSERT INTO contentTbl VALUES ($projectID, $type, $content)', {
+                            this._dbExec('INSERT INTO contentTbl VALUES ($projectID, $type, $content);', {
                                 $projectID: projectID,
                                 $type: index,
                                 $content: element
@@ -139,6 +139,24 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
         }).catch((err) => {
             console.log(err);
             DatabaseAccess.writeResult(res, err, null, 200); // Fail - unkown
+        });
+    }
+    async loadProject(projectID, res){
+        this._dbAll('SELECT content, type FROM contentTbl WHERE contentTbl.projectID = $projectID;', {
+            $projectID: Number(projectID)
+        }).then(result => {
+            if (result){
+                let project_content = [0,0,0,0];
+                result.forEach(element => {
+                    project_content[element.type] = element.content;
+                });
+                DatabaseAccess.writeResult(res, null, {project_content: project_content}, 200);
+            } else {
+                DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'No project found'}, null, 200);
+            }
+        }).catch(err => {
+            console.log(err);
+            DatabaseAccess.writeResult(res, err, null, 200)
         });
     }
 }

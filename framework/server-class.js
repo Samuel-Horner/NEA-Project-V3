@@ -57,6 +57,10 @@ class Server {
             url = '/account_page.html';
         }
         let urlArray = url.split('/').slice(1);
+        let searchIndex = urlArray[0].indexOf('?');
+        if (searchIndex != -1){
+            urlArray[0] = urlArray[0].slice(0,searchIndex);
+        }
         let tempResource = Server.recursiveObjSearch(resourceDirectory, urlArray);
         if (!tempResource) {
             let fofResource = Server.recursiveObjSearch(resourceDirectory, ['404-page.html']);
@@ -90,6 +94,9 @@ class Server {
                 break;
             case 'save-project':
                 this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, res);
+                break;
+            case 'load-project':
+                this.dbAccess.loadProject(reqBody.projectID, res);
                 break;
             default:
                 Server.error(res, 500);

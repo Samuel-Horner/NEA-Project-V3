@@ -8,23 +8,62 @@ const signInModalContent = `<h1>Please Sign In</h1> <hr> <br>
 <button id="submit-login" onclick="login()">Submit</button>
 <div id="modal_output"></div>`;
 
-var editorContainer = new EditorContainer("editor_container",
-    [GLCanvas.defaultFragment, 
-        GLCanvas.defaultVertex, 
-        convertToPrettyString(GLCanvas.defaultVertices, 6),
-        convertToPrettyString(GLCanvas.defaultIndices,3)],
-    0
-);
-
 const modal = document.getElementById('login-modal');
 const modalContent = document.getElementById('login-modal-content');
 modal.style.display = 'none';
 
 var accountInfo = null;
-var projectID = null;
 
 glCanvas = new GLCanvas("glScreen");
-runCode();
+
+var projectID = null;
+var editorContainer = null;
+if (window.location.search){
+    let search = window.location.search;
+    if (search.length > 1){search = search.slice(1);}
+    let searchArray = search.split('=');
+    if (searchArray[0] == 'projectid' && searchArray.length > 1){
+        projectID = searchArray[1];
+    }
+} 
+
+if (!projectID){
+    loadDefaultPages();
+} else {
+    loadProjectPages();
+}
+
+function loadDefaultPages(){
+    editorContainer = new EditorContainer("editor_container",
+        [GLCanvas.defaultFragment, 
+            GLCanvas.defaultVertex, 
+            convertToPrettyString(GLCanvas.defaultVertices, 6),
+            convertToPrettyString(GLCanvas.defaultIndices,3)],
+        0
+    );
+    runCode();
+}
+
+function loadProjectPages(){
+    req('/', {method:'load-project',projectID:projectID}).then(result => {
+        if (!result.error){
+            editorContainer = new EditorContainer("editor_container",
+                [result.stmtResult.project_content[0], 
+                    result.stmtResult.project_content[1], 
+                    result.stmtResult.project_content[2],
+                    result.stmtResult.project_content[3]],
+                0
+            );
+            runCode();
+        } else {
+            alert(`Error loading project ${projectID}`)
+            loadDefaultPages();
+        }
+    }).catch(error => {
+        alert(`Error loading project ${projectID}`)
+        loadDefaultPages();
+    });   
+}
 
 function runCode(){
     editorContainer.syncPages();
@@ -162,6 +201,7 @@ function modalOutput(output){
 }
 
 function sendProjectData(){
+    editorContainer.syncPages();
     req(url = '/', {
         method: 'save-project',
         username: accountInfo.username,
