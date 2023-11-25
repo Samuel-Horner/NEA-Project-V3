@@ -54,7 +54,7 @@ class Server {
 
     static getResource(res, resourceDirectory, url){
         if (url == '/'){
-            url = '/account_page.html'; // Placeholder index page
+            url = '/account_page.html';
         }
         let urlArray = url.split('/').slice(1);
         let tempResource = Server.recursiveObjSearch(resourceDirectory, urlArray);
@@ -87,6 +87,9 @@ class Server {
                 break;
             case 'delete-account':
                 this.dbAccess.deleteAccount(reqBody.accountID, reqBody.password, res);
+                break;
+            case 'save-project':
+                this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, res);
                 break;
             default:
                 Server.error(res, 500);

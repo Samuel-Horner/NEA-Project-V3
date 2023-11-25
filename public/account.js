@@ -70,39 +70,46 @@ async function submitCreateAccount(){
         username: document.getElementById('username').value,
         password: passwordInput.value 
     }
-    const result = await req('/', dataToSubmit);
-    
-    if (result.error) { // If account creation fails
-        if (result.error.errno == 19){
-            modalOutput('An account with that username already exists.\nPlease try a different username.');
-        } else if (result.error.errno == 0) {
-            modalOutput(result.error.errdsc);
+    req('/', dataToSubmit).then(result => {
+        if (result.error) { // If account creation fails
+            if (result.error.errno == 19){
+                modalOutput('An account with that username already exists.\nPlease try a different username.');
+            } else if (result.error.errno == 0) {
+                modalOutput(result.error.errdsc);
+            } else {
+                modalOutput('UNKOWN ERROR - Account creation failed.');
+            }
         } else {
-            modalOutput('UNKOWN ERROR - Account creation failed.');
+            hideModals();
+            saveAccountID(result.stmtResult.lastID);
         }
-    } else {
-        hideModals();
-        saveAccountID(result.stmtResult.lastID);
-    }
+    }).catch(error => {
+        modalOutput('UNKOWN ERROR - Account creation failed.');
+    });
+    
+    
 }
 
-async function login(){
+function login(){
     const dataToSubmit = {
         method: 'log-in',
         username: document.getElementById('username').value,
         password: document.getElementById('password').value 
     }
-    const result = await req('/', dataToSubmit);
-    if (result.error){ // If login fails
-        if (result.error.errno == 0) {
-            modalOutput(result.error.errdsc);
+    req('/', dataToSubmit).then(result => {
+        if (result.error){ // If login fails
+            if (result.error.errno == 0) {
+                modalOutput(result.error.errdsc);
+            } else {
+                modalOutput('UNKOWN ERROR - Sign in failed.');
+            }
         } else {
-            modalOutput('UNKOWN ERROR - Sign in failed.');
+            hideModals();
+            saveAccountID(result.stmtResult.accountID);
         }
-    } else {
-        hideModals();
-        saveAccountID(result.stmtResult.accountID);
-    }
+    }).catch(error => {
+        modalOutput('UNKOWN ERROR - Sign in failed.');
+    });
 }
 
 function logout(){
@@ -147,7 +154,6 @@ function loadProjects(){
         method: 'get-projects',
         accountID: accountID
     }).then(res => {
-        console.log(res);
         if (res.stmtResult.length == 0){
             projectList.innerHTML = `Uh oh - looks like you dont have any saved projects!<br><a href='/editor.html'>Make a new project?</a>`
             return;
@@ -170,16 +176,5 @@ function modalOutput(output){
     document.getElementById('modal_output').innerText = output;
 }
 
-async function req(url = '', data = {}) {
-    const response = await fetch(url, {
-        method: 'POST',
-        credentials: 'omit',
-        headers: {'content-type': 'application/json'},
-        body: JSON.stringify(data),
-    });
-    if (response.ok){
-        return response.json();
-    }
-}
 
 

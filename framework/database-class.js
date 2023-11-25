@@ -104,6 +104,43 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
             DatabaseAccess.writeResult(res, err, null, 200); // Fail - unkown
         });
     }
+
+    async saveProject(username, password, project_name, project_content, res){
+        await this._dbGet('SELECT accountID, password, salt FROM accountTbl WHERE accountTbl.username = $username', {
+            $username: username
+        }).then((result) => {
+            if (result){
+                if (DatabaseAccess.validatePassword(password, result.salt, result.password)){
+                    this._dbExec(`INSERT INTO projectTbl(projectName, accountID) VALUES (
+                        $projectName, $accountID
+                    );`, {
+                        $projectName: project_name,
+                        $accountID: result.accountID
+                    }).then((result) => {
+                        let projectID = result.lastID;
+                        console.log(project_content);
+                        project_content.forEach((element, index) => {
+                            this._dbExec('INSERT INTO contentTbl VALUES ($projectID, $type, $content)', {
+                                $projectID: projectID,
+                                $type: index,
+                                $content: element
+                            }).catch(err => {
+                                console.log(err);
+                            });
+                        });
+                        DatabaseAccess.writeResult(res, null, {projectID: projectID}, 200);
+                    });
+                } else {
+                    DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'Wrong password.'}, null, 200);
+                }
+            } else {
+                DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'No account found.'}, null, 200);
+            }
+        }).catch((err) => {
+            console.log(err);
+            DatabaseAccess.writeResult(res, err, null, 200); // Fail - unkown
+        });
+    }
 }
 
 module.exports = {DatabaseAccess};

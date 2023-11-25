@@ -37,7 +37,7 @@ async function initDB() {
                 ON DELETE CASCADE
             );`);
     // Creates tables if they do not exist
-    //await db.run('INSERT INTO projectTbl VALUES (1, 1, "testProject")');
+    // await db.run('INSERT INTO projectTbl VALUES (1, 1, "testProject")');
     db.close();
 }    
 
