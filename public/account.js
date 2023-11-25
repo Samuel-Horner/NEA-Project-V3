@@ -169,7 +169,7 @@ function projectListTemplate(projectName, projectID){
 }
 
 function editProject(projectID){
-    console.log(projectID);
+    window.location = `/editor.html?projectid=${projectID}`;
 }
 
 function modalOutput(output){

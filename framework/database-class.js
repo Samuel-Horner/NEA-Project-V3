@@ -105,31 +105,51 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
         });
     }
 
-    async saveProject(username, password, project_name, project_content, res){
+    async saveProject(username, password, project_name, project_content, project_id, res){
         await this._dbGet('SELECT accountID, password, salt FROM accountTbl WHERE accountTbl.username = $username;', {
             $username: username
         }).then((result) => {
             if (result){
+                let accountID = result.accountID;
                 if (DatabaseAccess.validatePassword(password, result.salt, result.password)){
-                    this._dbExec(`INSERT INTO projectTbl(projectName, accountID) VALUES (
-                        $projectName, $accountID
-                    );`, {
-                        $projectName: project_name,
-                        $accountID: result.accountID
-                    }).then((result) => {
-                        let projectID = result.lastID;
-                        console.log(project_content);
-                        project_content.forEach((element, index) => {
-                            this._dbExec('INSERT INTO contentTbl VALUES ($projectID, $type, $content);', {
-                                $projectID: projectID,
-                                $type: index,
-                                $content: element
-                            }).catch(err => {
-                                console.log(err);
+                    this._dbGet('SELECT projectName FROM projectTbl WHERE projectTbl.projectID = $projectID;', {
+                        $projectID: project_id
+                    }).then(result => {
+                        if (result && result.projectName == project_name){
+                            let projectID = project_id;
+                            console.log(project_content);
+                            project_content.forEach((element, index) => {
+                                this._dbExec('UPDATE contentTbl SET content = $content WHERE contentTbl.projectID = $projectID AND contentTbl.type = $type;', {
+                                    $projectID: projectID,
+                                    $type: index,
+                                    $content: element
+                                }).catch(err => {
+                                    console.log(err);
+                                });
                             });
-                        });
-                        DatabaseAccess.writeResult(res, null, {projectID: projectID}, 200);
-                    });
+                            DatabaseAccess.writeResult(res, null, {projectID: projectID}, 200);
+                        } else {
+                            this._dbExec(`INSERT INTO projectTbl(projectName, accountID) VALUES (
+                                $projectName, $accountID
+                            );`, {
+                                $projectName: project_name,
+                                $accountID: accountID
+                            }).then((result) => {
+                                let projectID = result.lastID;
+                                console.log(project_content);
+                                project_content.forEach((element, index) => {
+                                    this._dbExec('INSERT INTO contentTbl VALUES ($projectID, $type, $content);', {
+                                        $projectID: projectID,
+                                        $type: index,
+                                        $content: element
+                                    }).catch(err => {
+                                        console.log(err);
+                                    });
+                                });
+                                DatabaseAccess.writeResult(res, null, {projectID: projectID}, 200);
+                            });
+                        } // No project ID or no selected project
+                    })
                 } else {
                     DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'Wrong password.'}, null, 200);
                 }
@@ -150,7 +170,13 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
                 result.forEach(element => {
                     project_content[element.type] = element.content;
                 });
-                DatabaseAccess.writeResult(res, null, {project_content: project_content}, 200);
+                this._dbGet('SELECT projectName FROM projectTbl WHERE projectTbl.projectID = $projectID;',{
+                    $projectID: Number(projectID)
+                }).then(result => {
+                    if (result){
+                        DatabaseAccess.writeResult(res, null, {project_content: project_content, project_name: result.projectName}, 200);
+                    }
+                })
             } else {
                 DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'No project found'}, null, 200);
             }

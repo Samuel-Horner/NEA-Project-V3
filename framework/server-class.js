@@ -53,6 +53,7 @@ class Server {
     } // Converts file extensions into appropriate MIME type
 
     static getResource(res, resourceDirectory, url){
+        url = decodeURIComponent(url);
         if (url == '/'){
             url = '/account_page.html';
         }
@@ -93,7 +94,7 @@ class Server {
                 this.dbAccess.deleteAccount(reqBody.accountID, reqBody.password, res);
                 break;
             case 'save-project':
-                this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, res);
+                this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, reqBody.projectID, res);
                 break;
             case 'load-project':
                 this.dbAccess.loadProject(reqBody.projectID, res);

@@ -25,7 +25,7 @@ if (window.location.search){
     if (searchArray[0] == 'projectid' && searchArray.length > 1){
         projectID = searchArray[1];
     }
-} 
+} // There is probably a better way to do this, but it works
 
 if (!projectID){
     loadDefaultPages();
@@ -54,6 +54,7 @@ function loadProjectPages(){
                     result.stmtResult.project_content[3]],
                 0
             );
+            document.getElementById('page-info').innerText = result.stmtResult.project_name;
             runCode();
         } else {
             alert(`Error loading project ${projectID}`)
@@ -207,7 +208,8 @@ function sendProjectData(){
         username: accountInfo.username,
         password: accountInfo.password,
         project_name: document.getElementById('project_name').value,
-        project_content: editorContainer.pageContent
+        project_content: editorContainer.pageContent,
+        projectID: projectID
     }).then(res => {
         if (res.error){
             if (result.error.errno == 0) {
@@ -218,6 +220,7 @@ function sendProjectData(){
         } else {
             hideModals();
             projectID = res.stmtResult.projectID;
+            document.getElementById('page-info').innerText = document.getElementById('project_name').value;
         }
     });
 }
