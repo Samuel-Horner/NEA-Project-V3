@@ -162,7 +162,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
         });
     }
     async loadProject(projectID, res){
-        this._dbAll('SELECT content, type FROM contentTbl WHERE contentTbl.projectID = $projectID;', {
+        await this._dbAll('SELECT content, type FROM contentTbl WHERE contentTbl.projectID = $projectID;', {
             $projectID: Number(projectID)
         }).then(result => {
             if (result){
@@ -183,6 +183,31 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
         }).catch(err => {
             console.log(err);
             DatabaseAccess.writeResult(res, err, null, 200)
+        });
+    }
+
+    async deleteProject(accountID, password, projectID, res){
+        await this._dbGet('SELECT accountID, password, salt FROM accountTbl WHERE accountTbl.accountID = $accountID;', {
+            $accountID: accountID
+        }).then((result) => {
+            if (result){
+                if (DatabaseAccess.validatePassword(password, result.salt, result.password)){
+                        this._dbExec('DELETE FROM projectTbl WHERE projectTbl.projectID = $projectID AND projectTbl.accountID = $accountID', {
+                            $projectID: projectID,
+                            $accountID: accountID 
+                        }).then(result => {
+                            if(result){
+                                DatabaseAccess.writeResult(res, null, result, 200);
+                            }
+                        }).catch(error => {
+                            DatabaseAccess.writeResult(res, error, null, 200);
+                        });
+                } else {
+                    DatabaseAccess.writeResult(res, {errno: 0, errdsc: 'Wrong password.'}, null, 200);
+                }
+            }
+        }).catch(error => {
+            DatabaseAccess.writeResult(res, error, null, 200);
         });
     }
 }

@@ -34,7 +34,8 @@ const modal = document.getElementById('login-modal');
 const modalContent = document.getElementById('login-modal-content');
 const projectList = document.getElementById('project-list-ul');
 
-let accountID = null; 
+let accountID = null;
+let accPassword = null;
 
 showLoginModal();
 
@@ -81,7 +82,7 @@ async function submitCreateAccount(){
             }
         } else {
             hideModals();
-            saveAccountID(result.stmtResult.lastID);
+            saveAccountID(result.stmtResult.lastID, passwordInput.value);
         }
     }).catch(error => {
         modalOutput('UNKOWN ERROR - Account creation failed.');
@@ -105,7 +106,7 @@ function login(){
             }
         } else {
             hideModals();
-            saveAccountID(result.stmtResult.accountID);
+            saveAccountID(result.stmtResult.accountID, document.getElementById('password').value);
         }
     }).catch(error => {
         modalOutput('UNKOWN ERROR - Sign in failed.');
@@ -138,16 +139,17 @@ function deleteAccount(){
     });
 }
 
-function saveAccountID(id){
+function saveAccountID(id, password){
     accountID = id;
+    accPassword = password;
     // Could do something with cookies here to make account info
     // persist through pages, but not in project scope.
     loadProjects();
 }
 
 function loadProjects(){
+    projectList.innerHTML = '';
     if (!accountID){
-        projectList.innerHTML = '';
         return;
     }
     req(url = '/', {
@@ -165,11 +167,33 @@ function loadProjects(){
 }
 
 function projectListTemplate(projectName, projectID){
-    return `<li class="project-list-li" onclick="editProject(${projectID})">${projectName}</li>`;
+    return `<li class="project-list-li"">
+                <span onclick="editProject(${projectID})" class="project-name">${projectName}</span>
+                <button onclick="deleteProject(${projectID})" class="project-delete-button">Delete</button>
+            </li>`;
 }
 
 function editProject(projectID){
     window.location = `/editor.html?projectid=${projectID}`;
+}
+
+function deleteProject(projectID){
+    req(url = '/', {
+        method: 'delete-project',
+        accountID: accountID,
+        password: accPassword,
+        projectID: projectID
+    }).then(res => {
+        if (res.error){
+            if (result.error.errno == 0) {
+                alert(result.error.errdsc);
+            } else {
+                alert('UNKOWN ERROR - Delete account failed.');
+            }
+        } else {
+            loadProjects();
+        }
+    });
 }
 
 function modalOutput(output){

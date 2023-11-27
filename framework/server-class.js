@@ -99,6 +99,9 @@ class Server {
             case 'load-project':
                 this.dbAccess.loadProject(reqBody.projectID, res);
                 break;
+            case 'delete-project':
+                this.dbAccess.deleteProject(reqBody.accountID, reqBody.password, reqBody.projectID, res);
+                break;
             default:
                 Server.error(res, 500);
                 break;  
