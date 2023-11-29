@@ -8,8 +8,8 @@ require('./database/init.js').initDB().then(() => {
 
 /* TODO -
 1. Implement proper routing (making use of imported functions?) [server-class.js] --DONE--
-2. Add error handling so server doesnt crash on faulty request [server-class.js] -- N/A --
-3. Implement a proper DBMS [new files] -- 40% --
-4. Connect DBMS to frontend [new files & frontend] -- 40% --
-5. Refactor server side editor page to handle projectID in url -- N/A --
+2. Add error handling so server doesnt crash on faulty request [server-class.js] -- N/a --
+3. Implement a proper DBMS [new files] -- 100% --
+4. Connect DBMS to frontend [new files & frontend] -- 100% --
+5. Refactor server side editor page to handle projectID in url -- 100% --
 */
