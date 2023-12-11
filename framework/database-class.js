@@ -36,7 +36,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
             return;
         }
         const hashInformation = DatabaseAccess.hash(password, DatabaseAccess.generateSalt(128)); 
-        await this._dbExec('INSERT INTO accountTbl (username, password, salt) VALUES ($username,$password,$salt);', {
+        await this._dbExec('INSERT INTO accountTbl (username, password, salt) VALUES ($username,$password, $salt);', {
             $username : username,
             $password : hashInformation.hashedValue,
             $salt: hashInformation.salt
