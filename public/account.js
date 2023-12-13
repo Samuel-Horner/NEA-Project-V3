@@ -162,6 +162,7 @@ function loadProjects(){
         }
         res.stmtResult.forEach(project => {
             projectList.innerHTML += projectListTemplate(project.projectName, project.projectID);
+            projectList.innerHTML += '<br><button onclick="editProject(null)">Create New</button>'
         });
     });
 }
@@ -174,6 +175,10 @@ function projectListTemplate(projectName, projectID){
 }
 
 function editProject(projectID){
+    if (projectID == null){
+        window.location = '/editor.html';
+        return;
+    }
     window.location = `/editor.html?projectid=${projectID}`;
 }
 

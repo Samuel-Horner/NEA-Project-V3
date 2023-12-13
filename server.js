@@ -12,4 +12,5 @@ require('./database/init.js').initDB().then(() => {
 3. Implement a proper DBMS [new files] -- 100% --
 4. Connect DBMS to frontend [new files & frontend] -- 100% --
 5. Refactor server side editor page to handle projectID in url -- 100% --
+6. Edit account page and editor page to use session storage for password & accountid -- 0% --
 */
