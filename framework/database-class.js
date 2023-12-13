@@ -115,8 +115,9 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
             } // Fail - no account found
             let accountID = result.accountID;
             if (DatabaseAccess.validatePassword(password, result.salt, result.password)){
-                this._dbGet('SELECT projectName FROM projectTbl WHERE projectTbl.projectID = $projectID;', {
-                    $projectID: project_id
+                this._dbGet('SELECT projectName FROM projectTbl WHERE projectTbl.projectID = $projectID and projectTbl.accountID = $accountID;', {
+                    $projectID: project_id,
+                    $accountID: accountID
                 }).then(result => {
                     if (result && result.projectName == project_name){
                         let projectID = project_id;
@@ -129,7 +130,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
                             })
                         });
                         DatabaseAccess.writeResult(res, null, {projectID: projectID}, 200); // Success - updated project
-                    } else {
+                    } else { // No exisiting project with name under account
                         this._dbExec(`INSERT INTO projectTbl(projectName, accountID) VALUES (
                             $projectName, $accountID
                         );`, {
