@@ -162,8 +162,8 @@ function loadProjects(){
         }
         res.stmtResult.forEach(project => {
             projectList.innerHTML += projectListTemplate(project.projectName, project.projectID);
-            projectList.innerHTML += '<br><button onclick="editProject(null)">Create New</button>'
         });
+        projectList.innerHTML += '<br><button onclick="editProject(null)">Create New</button>';
     });
 }
 

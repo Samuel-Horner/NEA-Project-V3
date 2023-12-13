@@ -13,9 +13,9 @@ async function initDB() {
             password TEXT NOT NULL,
             salt TEXT NOT NULL,
             PRIMARY KEY (accountID)
-            );`); // NOTE - technically email here should be the pk, as account id is redundant,
-            // however in the interest of privacy using the account email as the account identifier would be problematic
-            // in url encoded requests. THEREFORE 2nf not 3nf
+            );`); // NOTE - technically username here should be the pk, as account id is redundant,
+            // however in the interest of privacy using the account username as the account identifier would be problematic
+            // in url encoded requests. THEREFORE 2NF not 3NF
     await db.exec(`CREATE TABLE IF NOT EXISTS projectTbl (
             projectID INTEGER NOT NULL UNIQUE,
             accountID INTEGER NOT NULL,
@@ -37,7 +37,6 @@ async function initDB() {
                 ON DELETE CASCADE
             );`);
     // Creates tables if they do not exist
-    // await db.run('INSERT INTO projectTbl VALUES (1, 1, "testProject")');
     db.close();
 }    
 
