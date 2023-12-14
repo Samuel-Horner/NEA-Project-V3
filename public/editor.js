@@ -3,16 +3,37 @@ const signInModalContent = `<h1>Please Sign In</h1> <hr> <br>
 <input type="text" id="username" /><br>
 <label>Password:</label>
 <input type="password" id="password" /><br>
-<label>Project Name:</labe>
+<label>Project Name:</label>
 <input type="text" id="project_name" /><br> <br>
 <button id="submit-login" onclick="login()">Submit</button>
 <div id="modal_output"></div>`;
+
+const projectNameModalContent = `
+<label>Project Name:</label>
+<input type="text" id="project_name" /><br> <br>
+<button id="submit-login" onclick="projectName = document.getElementById('project_name').value;hideModals();sendProjectData();">Submit</button>
+<div id="modal_output"></div>`
 
 const modal = document.getElementById('login-modal');
 const modalContent = document.getElementById('login-modal-content');
 modal.style.display = 'none';
 
 var accountInfo = null;
+var projectName = null;
+
+if (window.sessionStorage.getItem('accountID')){
+    accountInfo = {
+        accountID: window.sessionStorage.getItem('accountID'),
+        username: window.sessionStorage.getItem('username'),
+        password: window.sessionStorage.getItem('password')
+    }
+} else if (window.sessionStorage.getItem('password')){
+    accountInfo = {
+        username: window.sessionStorage.getItem('username'),
+        password: window.sessionStorage.getItem('password')
+    }
+    getAccountID();
+}
 
 glCanvas = new GLCanvas("glScreen");
 
@@ -55,6 +76,7 @@ function loadProjectPages(){
                 0
             );
             document.getElementById('page-info').innerText = result.stmtResult.project_name;
+            projectName = result.stmtResult.project_name;
             runCode();
         } else {
             alert(`Error loading project ${projectID}`)
@@ -153,7 +175,9 @@ function resChange(){
 function saveCode(){
     if (!accountInfo){
         showModal();
-    } else {
+    } else if (!projectID) {
+        showProjectNameModal();
+    } else { 
         sendProjectData();
     }
 }
@@ -181,15 +205,40 @@ function login(){
     });
 }
 
+function getAccountID(){
+    const dataToSubmit = {
+        method: 'log-in',
+        username: accountInfo.username,
+        password: accountInfo.password 
+    }
+    req('/', dataToSubmit).then(result => {
+        if (result.error){ // If login fails
+            accountInfo.accountID = null;
+        } else {
+            accountInfo.accountID = result.stmtResult.accountID;
+            window.sessionStorage.setItem('accountID',accountInfo.accountID);
+        }
+    });
+}
 function saveAccountInfo(){
+    projectName = document.getElementById('project_name').value;
+    consolelog(projectName);
     accountInfo = {
         username: document.getElementById('username').value,
         password: document.getElementById('password').value
     };
+    getAccountID();
+    window.sessionStorage.setItem('username',accountInfo.username);
+    window.sessionStorage.setItem('password',accountInfo.password);
 }
 
 function showModal(){
     modalContent.innerHTML = signInModalContent;
+    modal.style.display = 'block';
+}
+
+function showProjectNameModal(){
+    modalContent.innerHTML = projectNameModalContent;
     modal.style.display = 'block';
 }
 
@@ -207,7 +256,7 @@ function sendProjectData(){
         method: 'save-project',
         username: accountInfo.username,
         password: accountInfo.password,
-        project_name: document.getElementById('project_name').value,
+        project_name: projectName,
         project_content: editorContainer.pageContent,
         projectID: projectID
     }).then(res => {
@@ -220,7 +269,7 @@ function sendProjectData(){
         } else {
             hideModals();
             projectID = res.stmtResult.projectID;
-            document.getElementById('page-info').innerText = document.getElementById('project_name').value;
+            document.getElementById('page-info').innerText = projectName;
         }
     });
 }

@@ -34,10 +34,11 @@ const modal = document.getElementById('login-modal');
 const modalContent = document.getElementById('login-modal-content');
 const projectList = document.getElementById('project-list-ul');
 
-let accountID = null;
-let accPassword = null;
+let accountID = window.sessionStorage.getItem('accountID');
+let accPassword = window.sessionStorage.getItem('password');
 
-showLoginModal();
+if (!accountID) {showLoginModal();}
+else {loadProjects();}
 
 function showLoginModal(){
     if(!accountID){modalContent.innerHTML = signInModalContent;}// Sets content if not logged in
@@ -144,6 +145,9 @@ function saveAccountID(id, password){
     accPassword = password;
     // Could do something with cookies here to make account info
     // persist through pages, but not in project scope.
+    window.sessionStorage.setItem('accountID', id);
+    window.sessionStorage.setItem('password', password);
+    window.sessionStorage.setItem('username', document.getElementById('username').value);
     loadProjects();
 }
 
