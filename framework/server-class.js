@@ -98,10 +98,10 @@ class Server {
                 resultContent = await this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, reqBody.projectID, res);
                 break;
             case 'load-project':
-                resultContent = await this.dbAccess.loadProject(reqBody.projectID, res);
+                resultContent = await this.dbAccess.loadProject(Number(reqBody.projectID), res);
                 break;
             case 'delete-project':
-                resultContent = await this.dbAccess.deleteProject(reqBody.username, reqBody.password, reqBody.projectID, res);
+                resultContent = await this.dbAccess.deleteProject(reqBody.username, reqBody.password, Number(reqBody.projectID), res);
                 break;
             default:
                 Server.error(res, 500);
@@ -109,7 +109,12 @@ class Server {
         }
         if (resultContent) {
             res.writeHead(200, {'Content-Type':'application/json'});
-            res.end(JSON.stringify(resultContent));
+            if (resultContent.errdsc) {
+                res.end(JSON.stringify({error: resultContent, stmtResult: null}));
+            } else {
+                res.end(JSON.stringify({error: null, stmtResult: resultContent}));
+            }
+
         }
     } // Handles JSON encoded post requests
 

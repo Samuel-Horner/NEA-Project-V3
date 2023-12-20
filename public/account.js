@@ -34,14 +34,14 @@ const modal = document.getElementById('login-modal');
 const modalContent = document.getElementById('login-modal-content');
 const projectList = document.getElementById('project-list-ul');
 
-let accountID = window.sessionStorage.getItem('accountID');
+let accUsername = window.sessionStorage.getItem('username');
 let accPassword = window.sessionStorage.getItem('password');
 
-if (!accountID) {showLoginModal();}
+if (!accUsername) {showLoginModal();}
 else {loadProjects();}
 
 function showLoginModal(){
-    if(!accountID){modalContent.innerHTML = signInModalContent;}// Sets content if not logged in
+    if(!accUsername){modalContent.innerHTML = signInModalContent;}// Sets content if not logged in
     else{modalContent.innerHTML = accountMgmtModalContent;}
     modal.style.display = 'block'; // Shows sign-in modal
 }
@@ -83,7 +83,7 @@ async function submitCreateAccount(){
             }
         } else {
             hideModals();
-            saveAccountID(result.stmtResult.lastID, passwordInput.value);
+            saveAccountInfo(result.stmtResult.lastID, passwordInput.value);
         }
     }).catch(error => {
         modalOutput('UNKOWN ERROR - Account creation failed.');
@@ -107,7 +107,7 @@ function login(){
             }
         } else {
             hideModals();
-            saveAccountID(result.stmtResult.accountID, document.getElementById('password').value);
+            saveAccountInfo(result.stmtResult.username, document.getElementById('password').value);
         }
     }).catch(error => {
         modalOutput('UNKOWN ERROR - Sign in failed.');
@@ -115,7 +115,7 @@ function login(){
 }
 
 function logout(){
-    accountID = null;
+    accUsername = null;
     loadProjects();
     showLoginModal();
 }
@@ -123,7 +123,7 @@ function logout(){
 function deleteAccount(){
     req(url = '/', {
         method: 'delete-account',
-        accountID: accountID,
+        username: accUsername,
         password: document.getElementById('password').value
     }).then(res => {
         if (res.error){
@@ -133,34 +133,33 @@ function deleteAccount(){
                 modalOutput('UNKOWN ERROR - Delete account failed.');
             }
         } else {
-            accountID = null;
+            accUsername = null;
             loadProjects();
             showLoginModal();
         }
     });
 }
 
-function saveAccountID(id, password){
-    accountID = id;
+function saveAccountInfo(username, password){
+    accUsername = username;
     accPassword = password;
     // Could do something with cookies here to make account info
     // persist through pages, but not in project scope.
-    window.sessionStorage.setItem('accountID', id);
     window.sessionStorage.setItem('password', password);
-    window.sessionStorage.setItem('username', document.getElementById('username').value);
+    window.sessionStorage.setItem('username', username);
     loadProjects();
 }
 
 function loadProjects(){
     projectList.innerHTML = '';
-    if (!accountID){
+    if (!accUsername){
         return;
     }
     req(url = '/', {
         method: 'get-projects',
-        accountID: accountID
+        username: accUsername
     }).then(res => {
-        if (res.stmtResult.length == 0){
+        if (!res.stmtResult){
             projectList.innerHTML = `Uh oh - looks like you dont have any saved projects!<br><a href='/editor.html'>Make a new project?</a>`
             return;
         }
@@ -189,7 +188,7 @@ function editProject(projectID){
 function deleteProject(projectID){
     req(url = '/', {
         method: 'delete-project',
-        accountID: accountID,
+        username: accUsername,
         password: accPassword,
         projectID: projectID
     }).then(res => {
