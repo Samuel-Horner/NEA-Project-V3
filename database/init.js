@@ -12,9 +12,7 @@ async function initDB() {
             password TEXT NOT NULL,
             salt TEXT NOT NULL,
             PRIMARY KEY (username)
-            );`); // NOTE - technically username here should be the pk, as account id is redundant,
-            // however in the interest of privacy using the account username as the account identifier would be problematic
-            // in url encoded requests. THEREFORE 2NF not 3NF
+            );`);
     await db.exec(`CREATE TABLE IF NOT EXISTS projectTbl (
             projectID INTEGER NOT NULL UNIQUE,
             username TEXT NOT NULL,
