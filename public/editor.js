@@ -21,18 +21,11 @@ modal.style.display = 'none';
 var accountInfo = null;
 var projectName = null;
 
-if (window.sessionStorage.getItem('accountID')){
-    accountInfo = {
-        accountID: window.sessionStorage.getItem('accountID'),
-        username: window.sessionStorage.getItem('username'),
-        password: window.sessionStorage.getItem('password')
-    }
-} else if (window.sessionStorage.getItem('password')){
+if (window.sessionStorage.getItem('username')){
     accountInfo = {
         username: window.sessionStorage.getItem('username'),
         password: window.sessionStorage.getItem('password')
     }
-    getAccountID();
 }
 
 glCanvas = new GLCanvas("glScreen");
@@ -69,14 +62,14 @@ function loadProjectPages(){
     req('/', {method:'load-project',projectID:projectID}).then(result => {
         if (!result.error){
             editorContainer = new EditorContainer("editor_container",
-                [result.stmtResult.project_content[0], 
-                    result.stmtResult.project_content[1], 
-                    result.stmtResult.project_content[2],
-                    result.stmtResult.project_content[3]],
+                [result.stmtResult.projectContent[0], 
+                    result.stmtResult.projectContent[1], 
+                    result.stmtResult.projectContent[2],
+                    result.stmtResult.projectContent[3]],
                 0
             );
-            document.getElementById('page-info').innerText = result.stmtResult.project_name;
-            projectName = result.stmtResult.project_name;
+            document.getElementById('page-info').innerText = result.stmtResult.projectName;
+            projectName = result.stmtResult.projectName;
             runCode();
         } else {
             alert(`Error loading project ${projectID}`)
@@ -189,6 +182,7 @@ function login(){
         password: document.getElementById('password').value 
     }
     req('/', dataToSubmit).then(result => {
+        console.log(result);
         if (result.error){ // If login fails
             if (result.error.errno == 0) {
                 modalOutput(result.error.errdsc);
@@ -201,33 +195,18 @@ function login(){
             sendProjectData();
         }
     }).catch(error => {
+        console.log(error);
         modalOutput('UNKOWN ERROR - Sign in failed.');
     });
 }
 
-function getAccountID(){
-    const dataToSubmit = {
-        method: 'log-in',
-        username: accountInfo.username,
-        password: accountInfo.password 
-    }
-    req('/', dataToSubmit).then(result => {
-        if (result.error){ // If login fails
-            accountInfo.accountID = null;
-        } else {
-            accountInfo.accountID = result.stmtResult.accountID;
-            window.sessionStorage.setItem('accountID',accountInfo.accountID);
-        }
-    });
-}
 function saveAccountInfo(){
     projectName = document.getElementById('project_name').value;
-    consolelog(projectName);
+    console.log(projectName);
     accountInfo = {
         username: document.getElementById('username').value,
         password: document.getElementById('password').value
     };
-    getAccountID();
     window.sessionStorage.setItem('username',accountInfo.username);
     window.sessionStorage.setItem('password',accountInfo.password);
 }
@@ -261,8 +240,9 @@ function sendProjectData(){
         projectID: projectID
     }).then(res => {
         if (res.error){
-            if (result.error.errno == 0) {
-                modalOutput(result.error.errdsc);
+            if (res.error.errno == 0) {
+                console.log(res);
+                modalOutput(res.error.errdsc);
             } else {
                 modalOutput('UNKOWN ERROR - Save project failed.');
             }

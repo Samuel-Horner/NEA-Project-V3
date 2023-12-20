@@ -77,34 +77,44 @@ class Server {
         }
     } // Handles get requests and sets response
 
-    postResourceJSON(res, body){
+    async postResourceJSON(res, body){
         const reqBody = JSON.parse(body);
         console.log(reqBody);
+        let resultContent = {};
         switch (reqBody.method) {
             case 'create-account':
-                this.dbAccess.createAccount(reqBody.username, reqBody.password, res);
+                resultContent = await this.dbAccess.createAccount(reqBody.username, reqBody.password, res);
                 break;
             case 'log-in':
-                this.dbAccess.login(reqBody.username,reqBody.password, res);
+                resultContent = await this.dbAccess.login(reqBody.username,reqBody.password, res);
                 break;
             case 'get-projects':
-                this.dbAccess.getProjects(reqBody.accountID, res);
+                resultContent = await this.dbAccess.getProjects(reqBody.username, res);
                 break;
             case 'delete-account':
-                this.dbAccess.deleteAccount(reqBody.accountID, reqBody.password, res);
+                resultContent = await this.dbAccess.deleteAccount(reqBody.username, reqBody.password, res);
                 break;
             case 'save-project':
-                this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, reqBody.projectID, res);
+                resultContent = await this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, reqBody.projectID, res);
                 break;
             case 'load-project':
-                this.dbAccess.loadProject(reqBody.projectID, res);
+                resultContent = await this.dbAccess.loadProject(Number(reqBody.projectID), res);
                 break;
             case 'delete-project':
-                this.dbAccess.deleteProject(reqBody.accountID, reqBody.password, reqBody.projectID, res);
+                resultContent = await this.dbAccess.deleteProject(reqBody.username, reqBody.password, Number(reqBody.projectID), res);
                 break;
             default:
                 Server.error(res, 500);
                 break;  
+        }
+        if (resultContent) {
+            res.writeHead(200, {'Content-Type':'application/json'});
+            if (resultContent.errdsc) {
+                res.end(JSON.stringify({error: resultContent, stmtResult: null}));
+            } else {
+                res.end(JSON.stringify({error: null, stmtResult: resultContent}));
+            }
+
         }
     } // Handles JSON encoded post requests
 
@@ -114,7 +124,7 @@ class Server {
         res.end();
     } // Generic error method to respond to client
 
-    run () {
+    run() {
         this.publicFiles = Server.recursiveReadDir('./public/');
 
         this.server = http.createServer(this.options, (req, res) => {
