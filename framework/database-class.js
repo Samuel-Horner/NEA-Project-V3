@@ -205,7 +205,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
 
     /**
      * Gets all project data associated with a projectID
-     * @param {Number} projectID 
+     * @param {Number} projectID - Project ID
      * @returns {Object} Either:
      *              - {projectContent, projectName} if success
      *              - {errno, errdsc} if failiure
@@ -235,9 +235,9 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
 
     /**
      * Delets the given project
-     * @param {String} username 
-     * @param {String} password 
-     * @param {Number} projectID 
+     * @param {String} username - Account username
+     * @param {String} password - Plaintext password
+     * @param {Number} projectID - Project ID
      * @returns {Object}  Either:
      *              - {lastID, changes} if success
      *              - {errno, errdsc} if failiure
