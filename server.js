@@ -14,4 +14,7 @@ require('./database/init.js').initDB().then(() => { // Wait for the DB to be ini
 4. Connect DBMS to frontend [new files & frontend] -- 100% --
 5. Refactor server side editor page to handle projectID in url -- 100% --
 6. Edit account page and editor page to use session storage for password & accountid -- 100% --
+7. Rewrite the fronted and backend to use username as pk in accountTbl -- N/a --
+8. Rewrite server & backend class to handle res in resource functions -- N/a --
+9. Comment all functions etc. -- N/a --
 */

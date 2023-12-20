@@ -6,18 +6,18 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
         super(db_path); // PLACEHOLDER name for production db
     }
 
-    static generateSalt(length){
+    static #generateSalt(length){
         return crypto.randomBytes(Math.ceil(length / 2)).toString('hex').slice(0,length);
         // https://blog.logrocket.com/building-a-password-hasher-in-node-js/
     } // Generates salt
 
-    static hash(plaintext, salt){
+    static #hash(plaintext, salt){
         let hash = crypto.createHmac('sha512', salt);
         hash.update(plaintext);
         return {hashedValue: hash.digest('hex'), salt: salt};
     } // Salt/hash for passwords
 
-    static validatePassword(inputPassword, salt, desiredPassword){
+    static #validatePassword(inputPassword, salt, desiredPassword){
         let hashedPassword = DatabaseAccess.hash(inputPassword, salt).hashedValue;
         return hashedPassword == desiredPassword
     } // Compares a plaintext password to the stored hashed password

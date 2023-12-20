@@ -8,22 +8,21 @@ async function initDB() {
     })
 
     await db.exec(`CREATE TABLE IF NOT EXISTS accountTbl (
-            accountID INTEGER NOT NULL UNIQUE,
             username TEXT NOT NULL UNIQUE,
             password TEXT NOT NULL,
             salt TEXT NOT NULL,
-            PRIMARY KEY (accountID)
+            PRIMARY KEY (username)
             );`); // NOTE - technically username here should be the pk, as account id is redundant,
             // however in the interest of privacy using the account username as the account identifier would be problematic
             // in url encoded requests. THEREFORE 2NF not 3NF
     await db.exec(`CREATE TABLE IF NOT EXISTS projectTbl (
             projectID INTEGER NOT NULL UNIQUE,
-            accountID INTEGER NOT NULL,
+            username TEXT NOT NULL,
             projectName TEXT,
             PRIMARY KEY (projectID),
             CONSTRAINT fk_accountTbl
-                FOREIGN KEY (accountID) 
-                REFERENCES accountTbl(accountID) 
+                FOREIGN KEY (username) 
+                REFERENCES accountTbl(username) 
                 ON DELETE CASCADE
             );`);
     await db.exec(`CREATE TABLE IF NOT EXISTS contentTbl (
