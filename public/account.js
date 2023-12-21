@@ -62,6 +62,7 @@ function hideModals() {
 
 async function submitCreateAccount(){
     const passwordInput = document.getElementById('password');
+    const usernameInput = document.getElementById('username');
     const passwordReentryInput = document.getElementById('password-re-entry');
     if (passwordInput.value != passwordReentryInput.value){
         modalOutput('Passwords do not match.')
@@ -69,7 +70,7 @@ async function submitCreateAccount(){
     }
     const dataToSubmit = {
         method: 'create-account',
-        username: document.getElementById('username').value,
+        username: usernameInput.value,
         password: passwordInput.value 
     }
     req('/', dataToSubmit).then(result => {
@@ -83,7 +84,7 @@ async function submitCreateAccount(){
             }
         } else {
             hideModals();
-            saveAccountInfo(result.stmtResult.lastID, passwordInput.value);
+            saveAccountInfo(usernameInput.value, passwordInput.value);
         }
     }).catch(error => {
         modalOutput('UNKOWN ERROR - Account creation failed.');
