@@ -2,7 +2,6 @@ const http = require('node:http'); // set to https later
 const fs = require('node:fs');
 const path = require('node:path');
 const dataBaseClass = require('./database-class');
-const { Http2ServerResponse } = require('node:http2');
 
 /**
  * Class containing HTTP server logic
@@ -106,7 +105,7 @@ class Server {
             res.end(fofResource.content);
         } else {
             if (tempResource.type == null){
-                Server.error(res, 500);
+                Server.#error(res, 500);
             } else {
                 res.writeHead(200, {'Content-Type':`${tempResource.type}`});
                 res.end(tempResource.content);
@@ -146,7 +145,7 @@ class Server {
                 resultContent = await this.dbAccess.deleteProject(reqBody.username, reqBody.password, Number(reqBody.projectID), res);
                 break;
             default:
-                Server.error(res, 500);
+                Server.#error(res, 500);
                 break;  
         }
         if (resultContent) {
