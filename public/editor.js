@@ -145,8 +145,8 @@ function debugInfo(){
 function debugInfoUpdate(time){
     nextAnimationFrameID = window.requestAnimationFrame(debugInfoUpdate);
     uniformInfo.innerText = 
-    `Mouse: {${Math.round(glCanvas.mouse.pos.x * 1000) / 1000},${Math.round(glCanvas.mouse.pos.x * 1000) / 1000},${glCanvas.mouse.buttons.lmb}}
-    Time: ${(Math.round(glCanvas.time - glCanvas.renderStart)) / 1000}`;
+        `Mouse: {${Math.round(glCanvas.mouse.pos.x * 1000) / 1000},${Math.round(glCanvas.mouse.pos.x * 1000) / 1000},${glCanvas.mouse.buttons.lmb}}
+        Time: ${(Math.round(glCanvas.time - glCanvas.renderStart)) / 1000}`;
     if (time - debugInfoLast > 1000){ // Update every second
         debugInfoLast = time;
     } else{

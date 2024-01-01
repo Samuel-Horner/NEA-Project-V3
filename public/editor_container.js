@@ -1,7 +1,4 @@
 class EditorContainer {
-    editor; // Reference to the editor object
-    page = 0; // Current page number
-    pageContent = []; // An array of each page's content
     constructor(documentID, pages, defaultPage){ // Constructor method
         this.editor = CodeMirror(document.getElementById(documentID), {
             mode:  "clike",

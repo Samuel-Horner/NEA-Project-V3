@@ -112,13 +112,21 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
      *              - {errno, errdsc} if failiure
      */
     getProjects(username){
-        return this._dbAll(`SELECT projectName, projectID FROM projectTbl WHERE projectTbl.username = $username;`, {
+        return this._dbAll('SELECT projectName, projectID FROM projectTbl WHERE projectTbl.username = $username;', {
             $username: username
         }).then((result) => {
             if (result.length != 0){
                 return result; // Success
             } else {
-                return {errno: 0, errdsc: 'No projects found.'} // Fail - no projects saved
+                return this._dbGet('SELECT username FROM accountTbl WHERE accountTbl.username = $username', {
+                    $username: username
+                }).then((result) => {
+                    if (result){
+                        return {errno: 0, errdsc: 'No projects found.'} // Fail - no projects saved
+                    } else {
+                        return {errno: 1, errdsc: 'No account found.'} // Fail - no account found
+                    }
+                })    
             }
         }).catch((err) => {
             console.log(err);

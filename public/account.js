@@ -20,7 +20,8 @@ const createAccountModalContent = `<h1>Please Create An Account</h1> <hr> <br>
 
 const accountMgmtModalContent = `<h1>Account Management</h1> <hr> <br>
 <button onclick="logout()">Sign Out</button> <br> <br>
-<button onclick="showDeleteAccountModal()">Delete Account</button>`
+<button onclick="showDeleteAccountModal()">Delete Account</button> <br> <br> 
+<button onclick="hideModals()">Close</button>`
 
 const deleteAccountModalContent = `<h1>Delete Account</h1> <hr> <br>
 <p>Deleting an account will permenantly delete all saved projects.</p>
@@ -89,8 +90,6 @@ async function submitCreateAccount(){
     }).catch(error => {
         modalOutput('UNKOWN ERROR - Account creation failed.');
     });
-    
-    
 }
 
 function login(){
@@ -161,8 +160,15 @@ function loadProjects(){
         username: accUsername
     }).then(res => {
         if (!res.stmtResult){
-            projectList.innerHTML = `Uh oh - looks like you dont have any saved projects!<br><a href='/editor.html'>Make a new project?</a>`
-            return;
+            if (res.error.errno == 0){
+                projectList.innerHTML = `Uh oh - looks like you dont have any saved projects!<br><a href='/editor.html'>Make a new project?</a>`
+                return;
+            } else if (res.error.errno == 1){
+                window.sessionStorage.clear(); // Invalid account username in session storage
+                accUsername = null;
+                showLoginModal(); // Reload page
+                return;
+            }
         }
         res.stmtResult.forEach(project => {
             projectList.innerHTML += projectListTemplate(project.projectName, project.projectID);

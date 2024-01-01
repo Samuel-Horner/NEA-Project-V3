@@ -1,23 +1,4 @@
 class GLCanvas {
-    // Document Globals
-    canvas;
-    res = 500;
-    mouse = {pos: {x : 0, y: 0}, buttons: {lmb: 0}};
-    prevMousePos = {x: 0, y:0};
-    // Webgl Globals
-    gl;
-    program;
-    indices_length = 3;
-    // Rendering
-    renderStart = 0;
-    time = 0;
-    lastTime = 0;
-    lastFPSTime = 0;
-    frames = 0;
-    fps = 0;
-    mspf = 0;
-    // 13/08/23 - Are js vars default initialised to 0 in mem or null?
-
     // Shader Globals
     static defaultVertex = `attribute vec3 a_position; // Vertex position from vertex array
 attribute vec3 a_color; // Color to be passes in from vertex array and out to fragment
@@ -65,8 +46,11 @@ void main() {
             alert("Could not find requested canvas");
             return;
         } // Checks if canvas was found
+        this.res = 500;
         this.canvas.width = this.res;
         this.canvas.height = this.res;
+        this.mouse = {pos: {x : 0, y: 0}, buttons: {lmb: 0}};
+        this.prevMousePos = {x: 0, y:0};
         var localObj = this;
         this.canvas.addEventListener("mousemove", function(event){
             if (localObj.mouse.buttons.lmb == 1){
@@ -86,6 +70,13 @@ void main() {
             alert("Failed to create webgl context");
             return;
         } // Checks if browser supports webgl
+
+        this.lastTime = 0;
+        this.lastFPSTime = 0;
+        this.frames = 0;
+        this.fps = 0;
+        this.mspf = 0;
+
         this.gl.viewport(0, 0, this.gl.drawingBuffferWidth, this.gl.drawingBufferHeight);
         this.gl.clearColor(1.0, 0.5, 1.0, 1.0);
         this.gl.enable(this.gl.DEPTH_TEST);
@@ -173,7 +164,7 @@ void main() {
 
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-        this.gl.uniform1f(this.program.uniform_loc.time_loc, (this.time - this.renderStart) / 1000);
+        this.gl.uniform1f(this.program.uniform_loc.time_loc, this.time / 1000);
         this.gl.uniform1f(this.program.uniform_loc.res_loc, this.res);
         this.gl.uniform3f(this.program.uniform_loc.mouse_loc, this.mouse.pos.x, this.mouse.pos.y, this.mouse.buttons.lmb);   
 
