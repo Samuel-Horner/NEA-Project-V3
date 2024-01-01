@@ -57,6 +57,9 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
         if (password.length < 8){
             return {errno: 0, errdsc: 'Password must be a minimum of 8 characters long.'};
         } // Fail - password not long enough
+        if (username.length > 20 || username.length < 1) {
+            return {errno: 0, errdsc: 'Username must be within 1-20 characters long.'};
+        } // Fail - username invalid
         const hashInformation = DatabaseAccess.#hash(password, DatabaseAccess.#generateSalt(128)); 
         return this._dbExec('INSERT INTO accountTbl (username, password, salt) VALUES ($username,$password, $salt);', {
             $username : username,
