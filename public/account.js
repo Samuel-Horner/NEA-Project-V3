@@ -39,7 +39,10 @@ let accUsername = window.sessionStorage.getItem('username');
 let accPassword = window.sessionStorage.getItem('password');
 
 if (!accUsername) {showLoginModal();}
-else {loadProjects();}
+else {
+    loadProjects();
+    document.getElementById('page-info').innerText = accUsername;
+}
 
 function showLoginModal(){
     if(!accUsername){modalContent.innerHTML = signInModalContent;}// Sets content if not logged in
@@ -127,8 +130,8 @@ function deleteAccount(){
         password: document.getElementById('password').value
     }).then(res => {
         if (res.error){
-            if (result.error.errno == 0) {
-                modalOutput(result.error.errdsc);
+            if (res.error.errno == 0) {
+                modalOutput(res.error.errdsc);
             } else {
                 modalOutput('UNKOWN ERROR - Delete account failed.');
             }
@@ -147,6 +150,7 @@ function saveAccountInfo(username, password){
     // persist through pages, but not in project scope.
     window.sessionStorage.setItem('password', password);
     window.sessionStorage.setItem('username', username);
+    document.getElementById('page-info').innerText = username;
     loadProjects();
 }
 

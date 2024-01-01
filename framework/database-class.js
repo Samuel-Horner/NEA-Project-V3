@@ -170,7 +170,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
      *              - {projectID} if success
      *              - {errno, errdsc} if failiure
      */
-    async saveProject(username, password, projectName, projectContent, projectID){
+    saveProject(username, password, projectName, projectContent, projectID){
         return this.login(username, password).then((result) => {
             if (result.username == username) {
                 return this._dbGet('SELECT projectName FROM projectTbl WHERE projectTbl.projectID = $projectID and projectTbl.username = $username;', {
