@@ -124,25 +124,25 @@ class Server {
         let resultContent = {};
         switch (reqBody.method) {
             case 'create-account':
-                resultContent = await this.dbAccess.createAccount(reqBody.username, reqBody.password, res);
+                resultContent = await this.dbAccess.createAccount(reqBody.username, reqBody.password);
                 break;
             case 'log-in':
-                resultContent = await this.dbAccess.login(reqBody.username,reqBody.password, res);
+                resultContent = await this.dbAccess.login(reqBody.username,reqBody.password);
                 break;
             case 'get-projects':
-                resultContent = await this.dbAccess.getProjects(reqBody.username, res);
+                resultContent = await this.dbAccess.getProjects(reqBody.username);
                 break;
             case 'delete-account':
-                resultContent = await this.dbAccess.deleteAccount(reqBody.username, reqBody.password, res);
+                resultContent = await this.dbAccess.deleteAccount(reqBody.username, reqBody.password);
                 break;
             case 'save-project':
-                resultContent = await this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, reqBody.projectID, res);
+                resultContent = await this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, reqBody.projectID);
                 break;
             case 'load-project':
-                resultContent = await this.dbAccess.loadProject(Number(reqBody.projectID), res);
+                resultContent = await this.dbAccess.loadProject(Number(reqBody.projectID));
                 break;
             case 'delete-project':
-                resultContent = await this.dbAccess.deleteProject(reqBody.username, reqBody.password, Number(reqBody.projectID), res);
+                resultContent = await this.dbAccess.deleteProject(reqBody.username, reqBody.password, Number(reqBody.projectID));
                 break;
             default:
                 Server.#error(res, 500);

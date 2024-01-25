@@ -118,7 +118,7 @@ function login(){
 }
 
 function logout(){
-    accUsername = null;
+    saveAccountInfo(null, null)
     loadProjects();
     showLoginModal();
 }
@@ -136,9 +136,7 @@ function deleteAccount(){
                 modalOutput('UNKOWN ERROR - Delete account failed.');
             }
         } else {
-            accUsername = null;
-            loadProjects();
-            showLoginModal();
+            logout();
         }
     });
 }
@@ -165,7 +163,7 @@ function loadProjects(){
     }).then(res => {
         if (!res.stmtResult){
             if (res.error.errno == 0){
-                projectList.innerHTML = `Uh oh - looks like you dont have any saved projects!<br><a href='/editor.html'>Make a new project?</a>`
+                projectList.innerHTML = `Uh oh - looks like you dont have any saved projects!<br><a href='/editor.html'>Make a new project?</a><br><a href='http://localhost:8080/editor.html?projectid=1'>View an example project?</a>`;
                 return;
             } else if (res.error.errno == 1){
                 window.sessionStorage.clear(); // Invalid account username in session storage

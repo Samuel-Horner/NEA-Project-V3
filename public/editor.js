@@ -175,6 +175,14 @@ function saveCode(){
     }
 }
 
+function saveCodeAs() {
+    if (!accountInfo){
+        showModal();
+    } else {
+        showProjectNameModal();
+    } 
+}
+
 function login(){
     const dataToSubmit = {
         method: 'log-in',

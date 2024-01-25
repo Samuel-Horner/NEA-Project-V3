@@ -217,6 +217,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
     /**
      * Gets all project data associated with a projectID
      * @param {Number} projectID - Project ID
+     * @param {boolean} metadata - Whether or not to only send metadata (project name)
      * @returns {Object} Either:
      *              - {projectContent, projectName} if success
      *              - {errno, errdsc} if failiure

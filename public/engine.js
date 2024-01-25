@@ -61,7 +61,7 @@ void main() {
             localObj.mouse.buttons = GLCanvas.mouseUp(event);
         });
         this.canvas.addEventListener("mousedown", function(event){
-            localObj.mouse.buttons = GLCanvas.mouseDown(event);
+            localObj.mouse = GLCanvas.mouseDown(event, localObj.canvas);
         });
 
         this.gl = this.canvas.getContext("webgl");
@@ -170,7 +170,7 @@ void main() {
 
         this.gl.drawElements(this.gl.TRIANGLES, this.indices_length, this.gl.UNSIGNED_SHORT, 0);
 
-        this.mspf = performance.now() - this.time;
+        this.mspf = performance.now() - this.lastTime;
     }
 
     updateRes(resolution){
@@ -183,8 +183,9 @@ void main() {
         if (canvas == null){return}
         const rect = canvas.getBoundingClientRect();
         let mouse = {x: 0, y: 0};
-        mouse.x = (event.clientX - rect.left) / rect.width;
-        mouse.y = (rect.height - (event.clientY - rect.top)) / rect.height;
+        const clamp = (num, min, max) => Math.min(Math.max(num,min),max);
+        mouse.x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
+        mouse.y = clamp((rect.height - (event.clientY - rect.top)) / rect.height, 0, 1);
         return mouse;
     }
 
@@ -192,12 +193,16 @@ void main() {
         return {lmb: 0};
     }
     
-    static mouseDown(event){
+    static mouseDown(event, canvas){
+        let mouse = {pos: {x: 0, y: 0}, buttons: {lmb: 0}}; 
+        mouse.pos = GLCanvas.updateMousePos(event, canvas)
         if (event.button == 0){
             event.preventDefault();
-            return {lmb: 1};
+            mouse.buttons.lmb = 1;
+            return mouse;
         } else {
-            return {lmb: 0};
+            mouse.buttons.lmb = 0;
+            return mouse;
         }
     }
 
