@@ -183,7 +183,7 @@ void main() {
         if (canvas == null){return}
         const rect = canvas.getBoundingClientRect();
         let mouse = {x: 0, y: 0};
-        const clamp = (num, min, max) => Math.min(Math.max(num,min),max);
+        function clamp(num, min, max) {return Math.min(Math.max(num,min),max);}
         mouse.x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
         mouse.y = clamp((rect.height - (event.clientY - rect.top)) / rect.height, 0, 1);
         return mouse;
