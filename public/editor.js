@@ -6,12 +6,14 @@ const signInModalContent = `<h1>Please Sign In</h1> <hr> <br>
 <label>Project Name:</label>
 <input type="text" id="project_name" /><br> <br>
 <button id="submit-login" onclick="login()">Submit</button>
+<button id="cancel" onclick="hideModals();">Cancel</button>
 <div id="modal_output"></div>`;
 
 const projectNameModalContent = `
 <label>Project Name:</label>
 <input type="text" id="project_name" /><br> <br>
 <button id="submit-login" onclick="projectName = document.getElementById('project_name').value;hideModals();sendProjectData();">Submit</button>
+<button id="cancel" onclick="hideModals();">Cancel</button>
 <div id="modal_output"></div>`
 
 const modal = document.getElementById('login-modal');
