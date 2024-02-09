@@ -114,6 +114,26 @@ void main() {
     }
 
     initBuffers(vertices_source, indices_source){
+        if (vertices_source.length % 6 != 0) {alert("Vertices must have 6 values each."); return;}
+        let abort = false;
+        vertices_source.forEach(e => {
+            if (isNaN(e)) {
+                alert("Vertices must be numbers"); 
+                abort = true; 
+                return;
+            }
+        })
+        let maxIndex = 0;
+        indices_source.forEach(e => {
+            if (isNaN(e)){
+                alert("Indices must be numbers"); 
+                abort = true;
+                return;
+            }
+            maxIndex = Math.max(e, maxIndex);
+        });
+        if (maxIndex > vertices_source.length / 6) {alert("Indices reference a non existent vertex."); return;}
+        if (abort) {return;}
         const vert_buffer = this.gl.createBuffer();
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vert_buffer);
         this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(vertices_source), this.gl.STATIC_DRAW);
@@ -164,7 +184,7 @@ void main() {
 
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-        this.gl.uniform1f(this.program.uniform_loc.time_loc, this.time / 1000);
+        this.gl.uniform1f(this.program.uniform_loc.time_loc, (this.time - this.renderStart) / 1000);
         this.gl.uniform1f(this.program.uniform_loc.res_loc, this.res);
         this.gl.uniform3f(this.program.uniform_loc.mouse_loc, this.mouse.pos.x, this.mouse.pos.y, this.mouse.buttons.lmb);   
 
