@@ -132,7 +132,7 @@ void main() {
             }
             maxIndex = Math.max(e, maxIndex);
         });
-        if (maxIndex > vertices_source.length / 6) {alert("Indices reference a non existent vertex."); return;}
+        if (maxIndex > (vertices_source.length / 6) - 1) {alert("Indices reference a non existent vertex."); return;}
         if (abort) {return;}
         const vert_buffer = this.gl.createBuffer();
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vert_buffer);
