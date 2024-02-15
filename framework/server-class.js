@@ -124,38 +124,53 @@ class Server {
         let resultContent = {};
         switch (reqBody.method) {
             case 'create-account':
-                resultContent = await this.dbAccess.createAccount(reqBody.username, reqBody.password);
+                if (reqBody.username && reqBody.password) {
+                    resultContent = await this.dbAccess.createAccount(reqBody.username, reqBody.password);
+                }
                 break;
             case 'log-in':
-                resultContent = await this.dbAccess.login(reqBody.username,reqBody.password);
+                if (reqBody.username && reqBody.password) {
+                    resultContent = await this.dbAccess.login(reqBody.username,reqBody.password);
+                }
                 break;
             case 'get-projects':
-                resultContent = await this.dbAccess.getProjects(reqBody.username);
+                if (reqBody.username) {
+                    resultContent = await this.dbAccess.getProjects(reqBody.username);
+                }
                 break;
             case 'delete-account':
-                resultContent = await this.dbAccess.deleteAccount(reqBody.username, reqBody.password);
+                if (reqBody.username, reqBody.password) {
+                    resultContent = await this.dbAccess.deleteAccount(reqBody.username, reqBody.password);
+                }
                 break;
             case 'save-project':
-                resultContent = await this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, reqBody.projectID);
+                if (reqBody.username && reqBody.password && reqBody.project_name && reqBody.project_content && reqBody.projectID) {
+                    resultContent = await this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, reqBody.projectID);
+                }
                 break;
             case 'load-project':
-                resultContent = await this.dbAccess.loadProject(Number(reqBody.projectID));
+                if (reqBody.projectID) { // This will fail if project ID == 0, but as the ID's start from 1, not a problem
+                    resultContent = await this.dbAccess.loadProject(reqBody.projectID);
+                }
                 break;
             case 'delete-project':
-                resultContent = await this.dbAccess.deleteProject(reqBody.username, reqBody.password, Number(reqBody.projectID));
+                if (reqBody.username && reqBody.password && reqBody.projectID) {
+                    resultContent = await this.dbAccess.deleteProject(reqBody.username, reqBody.password, reqBody.projectID);
+                }
                 break;
             default:
-                Server.#error(res, 500);
-                break;  
+                break;
         }
-        if (resultContent) {
-            res.writeHead(200, {'Content-Type':'application/json'});
-            if (resultContent.errdsc) {
-                res.end(JSON.stringify({error: resultContent, stmtResult: null}));
-            } else {
-                res.end(JSON.stringify({error: null, stmtResult: resultContent}));
-            }
+        if (Object.keys(resultContent).length == 0){
+            Server.#error(res, 500);
+            return;
+        }
 
+        res.writeHead(200, {'Content-Type':'application/json'});
+        if (resultContent.errdsc) {
+            res.end(JSON.stringify({error: resultContent, stmtResult: null}));
+        } else {
+            res.end(JSON.stringify({error: null, stmtResult: resultContent}));
         }
     }
 

@@ -223,6 +223,8 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
      *              - {errno, errdsc} if failiure
      */
     loadProject(projectID){
+        projectID = Number(projectID);
+        if (Number.isNaN(projectID)) {return {errno: 0, errdsc: 'Invalid project ID'};}
         return this._dbAll('SELECT content, type FROM contentTbl WHERE contentTbl.projectID = $projectID;', {
             $projectID: projectID
         }).then(result => {
@@ -255,6 +257,8 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
      *              - {errno, errdsc} if failiure
      */
     deleteProject(username, password, projectID){
+        projectID = Number(projectID);
+        if (Number.isNaN(projectID)) {return {errno: 0, errdsc: 'Invalid project ID'};}
         return this.login(username, password).then((result) => {
             if (result.username == username){
                 return this._dbExec('DELETE FROM projectTbl WHERE projectTbl.projectID = $projectID AND projectTbl.username = $username', {
