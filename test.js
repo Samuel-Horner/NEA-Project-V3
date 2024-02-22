@@ -12,8 +12,8 @@ async function req(url = '', data = {}) {
         body: JSON.stringify(data),
     });
     if (response.ok){
-        //return response.json();
-        return {status: "SUCCESS", data: data};
+        let res = await response.json();
+        return {status: "SUCCESS", data: data, result: res.error ? res.error : Object.keys(res.stmtResult)};
     } else {
         return {status: "ERROR", data: data};
     }
