@@ -9,7 +9,7 @@ node server.js
 ```
 and connect to the webiste at [localhost:8080](http://localhost:8080/). I have created an example account with
 ```
-username = Example account
+username = Example Account
 password = 12345678
 ```
 which has an example project.
