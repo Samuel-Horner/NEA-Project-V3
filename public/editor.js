@@ -1,3 +1,4 @@
+// Modal Content
 const signInModalContent = `<h1>Please Sign In</h1> <hr> <br>
 <label>Username:</label>
 <input type="text" id="username" /><br>
@@ -16,10 +17,12 @@ const projectNameModalContent = `
 <button id="cancel" onclick="hideModals();">Cancel</button>
 <div id="modal_output"></div>`
 
+// Initialising constants
 const modal = document.getElementById('login-modal');
 const modalContent = document.getElementById('login-modal-content');
 modal.style.display = 'none';
 
+// Fetching account info
 var accountInfo = null;
 var projectName = null;
 
@@ -30,6 +33,7 @@ if (window.sessionStorage.getItem('username')){
     }
 }
 
+// Initialising glCanvas
 glCanvas = new GLCanvas("glScreen");
 
 var projectID = null;
@@ -43,6 +47,7 @@ if (window.location.search){
     }
 } // There is probably a better way to do this, but it works
 
+// Loading project
 if (!projectID){
     loadDefaultPages();
 } else {
@@ -83,17 +88,7 @@ function loadProjectPages(){
     });   
 }
 
-function runCode(){
-    editorContainer.syncPages();
-    glCanvas.initProgram(editorContainer.pageContent[0], 
-        editorContainer.pageContent[1]);
-    let vertices = convertToArray(editorContainer.pageContent[2]);
-    let indices = convertToArray(editorContainer.pageContent[3]);
-    glCanvas.initBuffers(vertices, indices);
-    glCanvas.renderStart = performance.now();
-    glCanvas.render();
-}
-
+// Editor functions
 function convertToArray(string_input){
     return string_input.toString().replace(/[\[\] \n]/g, "").split(",").map(Number);
 }
@@ -121,7 +116,18 @@ function indicesTab(){
 }
 
 // Player controlls
+function runCode(){
+    editorContainer.syncPages();
+    glCanvas.initProgram(editorContainer.pageContent[0], 
+        editorContainer.pageContent[1]);
+    let vertices = convertToArray(editorContainer.pageContent[2]);
+    let indices = convertToArray(editorContainer.pageContent[3]);
+    glCanvas.initBuffers(vertices, indices);
+    glCanvas.renderStart = performance.now();
+    glCanvas.render();
+}
 
+// Initialising player variables
 const debugInfoDiv = document.getElementById("debug_info");
 debugInfoDiv.style.display = "none";
 var debugInfoVis = false;
@@ -133,6 +139,7 @@ const uniformInfo = document.getElementById("uniform_info");
 const resSlider = document.getElementById("resolution_slider");
 const resDisplay = document.getElementById("resolution_display");
 
+// Debug Info
 function debugInfo(){
     if (!debugInfoVis){
         debugInfoDiv.style.display = "block";
@@ -159,6 +166,7 @@ function debugInfoUpdate(time){
     MSPF: ${Math.round(glCanvas.mspf * 100) / 100}`; 
 }
 
+// Resolution slider logic
 function resChange(){
     newRes = resSlider.value;
     glCanvas.updateRes(newRes);
@@ -166,7 +174,6 @@ function resChange(){
 }
 
 // Save project
-
 function saveCode(){
     if (!accountInfo){
         showModal();
@@ -185,6 +192,7 @@ function saveCodeAs() {
     } 
 }
 
+// Database operations
 function login(){
     const dataToSubmit = {
         method: 'log-in',
@@ -221,24 +229,6 @@ function saveAccountInfo(){
     window.sessionStorage.setItem('password',accountInfo.password);
 }
 
-function showModal(){
-    modalContent.innerHTML = signInModalContent;
-    modal.style.display = 'block';
-}
-
-function showProjectNameModal(){
-    modalContent.innerHTML = projectNameModalContent;
-    modal.style.display = 'block';
-}
-
-function hideModals() {
-    modal.style.display = 'none';
-}
-
-function modalOutput(output){
-    document.getElementById('modal_output').innerText = output;
-}
-
 function sendProjectData(){
     editorContainer.syncPages();
     req(url = '/', {
@@ -262,4 +252,23 @@ function sendProjectData(){
             document.getElementById('page-info').innerText = projectName;
         }
     });
+}
+
+// Modal operations
+function showModal(){
+    modalContent.innerHTML = signInModalContent;
+    modal.style.display = 'block';
+}
+
+function showProjectNameModal(){
+    modalContent.innerHTML = projectNameModalContent;
+    modal.style.display = 'block';
+}
+
+function hideModals() {
+    modal.style.display = 'none';
+}
+
+function modalOutput(output){
+    document.getElementById('modal_output').innerText = output;
 }

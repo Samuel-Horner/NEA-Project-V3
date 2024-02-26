@@ -1,3 +1,9 @@
+/***
+ * Sends a POST request to the server
+ * @param {string} url
+ * @param {JSON} data
+ * @returns {JSON}
+ */
 async function req(url = '', data = {}) {
     const response = await fetch(url, {
         method: 'POST',

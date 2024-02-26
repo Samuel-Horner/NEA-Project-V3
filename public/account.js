@@ -1,3 +1,4 @@
+// Different Modal Contents
 const signInModalContent = `<h1>Please Sign In</h1> <hr> <br>
 <label>Username:</label>
 <input type="text" id="username" /><br>
@@ -31,6 +32,7 @@ const deleteAccountModalContent = `<h1>Delete Account</h1> <hr> <br>
 <button onclick="showLoginModal()">Cancel</button>
 <div id="modal_output"></div>`;
 
+// Initialising constants and fetching account info
 const modal = document.getElementById('login-modal');
 const modalContent = document.getElementById('login-modal-content');
 const projectList = document.getElementById('project-list-ul');
@@ -44,6 +46,7 @@ else {
     document.getElementById('page-info').innerText = accUsername;
 }
 
+// Modal Management
 function showLoginModal(){
     if(!accUsername){modalContent.innerHTML = signInModalContent;}// Sets content if not logged in
     else{modalContent.innerHTML = accountMgmtModalContent;}
@@ -64,6 +67,11 @@ function hideModals() {
     modal.style.display = 'none'; // Hides modal
 }
 
+function modalOutput(output){
+    document.getElementById('modal_output').innerText = output;
+}
+
+// Database operations
 async function submitCreateAccount(){
     const passwordInput = document.getElementById('password');
     const usernameInput = document.getElementById('username');
@@ -117,12 +125,6 @@ function login(){
     });
 }
 
-function logout(){
-    saveAccountInfo(null, null)
-    loadProjects();
-    showLoginModal();
-}
-
 function deleteAccount(){
     req(url = '/', {
         method: 'delete-account',
@@ -139,17 +141,6 @@ function deleteAccount(){
             logout();
         }
     });
-}
-
-function saveAccountInfo(username, password){
-    accUsername = username;
-    accPassword = password;
-    // Could do something with cookies here to make account info
-    // persist through pages, but not in project scope.
-    window.sessionStorage.setItem('password', password);
-    window.sessionStorage.setItem('username', username);
-    document.getElementById('page-info').innerText = username;
-    loadProjects();
 }
 
 function loadProjects(){
@@ -179,21 +170,6 @@ function loadProjects(){
     });
 }
 
-function projectListTemplate(projectName, projectID){
-    return `<li class="project-list-li"">
-                <span onclick="editProject(${projectID})" class="project-name">${projectName}</span>
-                <button onclick="deleteProject(${projectID})" class="project-delete-button">Delete</button>
-            </li>`;
-}
-
-function editProject(projectID){
-    if (projectID == null){
-        window.location = '/editor.html';
-        return;
-    }
-    window.location = `/editor.html?projectid=${projectID}`;
-}
-
 function deleteProject(projectID){
     req(url = '/', {
         method: 'delete-project',
@@ -213,9 +189,37 @@ function deleteProject(projectID){
     });
 }
 
-function modalOutput(output){
-    document.getElementById('modal_output').innerText = output;
+// Manages account information
+function logout(){
+    saveAccountInfo(null, null)
+    loadProjects();
+    showLoginModal();
 }
 
+function saveAccountInfo(username, password){
+    accUsername = username;
+    accPassword = password;
+    // Could do something with cookies here to make account info
+    // persist through pages, but not in project scope.
+    window.sessionStorage.setItem('password', password);
+    window.sessionStorage.setItem('username', username);
+    document.getElementById('page-info').innerText = username;
+    loadProjects();
+}
 
+// Project list management
+function projectListTemplate(projectName, projectID){
+    return `<li class="project-list-li"">
+                <span onclick="editProject(${projectID})" class="project-name">${projectName}</span>
+                <button onclick="deleteProject(${projectID})" class="project-delete-button">Delete</button>
+            </li>`;
+}
 
+// Redirects to editor page
+function editProject(projectID){
+    if (projectID == null){
+        window.location = '/editor.html';
+        return;
+    }
+    window.location = `/editor.html?projectid=${projectID}`;
+}
