@@ -6,7 +6,7 @@ const signInModalContent = `<h1>Please Sign In</h1> <hr> <br>
 <input type="password" id="password" /><br>
 <label>Project Name:</label>
 <input type="text" id="project_name" /><br> <br>
-<button id="submit-login" onclick="login()">Submit</button>
+<button id="submit-login" onclick="login();">Submit</button>
 <button id="cancel" onclick="hideModals();">Cancel</button>
 <div id="modal_output"></div>`;
 
@@ -194,13 +194,22 @@ function saveCodeAs() {
 
 // Database operations
 function login(){
+    let inputed_username = document.getElementById('username').value;
+    if (inputed_username == ''){
+        modalOutput('Please enter a username.');
+        return;
+    }
+    let inputed_password = document.getElementById('password').value;
+    if (inputed_password == ''){
+        modalOutput('Please enter a password.');
+        return;
+    }
     const dataToSubmit = {
         method: 'log-in',
-        username: document.getElementById('username').value,
-        password: document.getElementById('password').value 
+        username: inputed_username,
+        password: inputed_username 
     }
     req('/', dataToSubmit).then(result => {
-        console.log(result);
         if (result.error){ // If login fails
             if (result.error.errno == 0) {
                 modalOutput(result.error.errdsc);
@@ -208,29 +217,36 @@ function login(){
                 modalOutput('UNKOWN ERROR - Sign in failed.');
             }
         } else {
-            saveAccountInfo();
+            saveAccountInfo(result.stmtResult.username, document.getElementById('password').value);
             hideModals();
             sendProjectData();
         }
     }).catch(error => {
-        console.log(error);
         modalOutput('UNKOWN ERROR - Sign in failed.');
     });
 }
 
-function saveAccountInfo(){
+function saveAccountInfo(username, password){
     projectName = document.getElementById('project_name').value;
-    console.log(projectName);
     accountInfo = {
-        username: document.getElementById('username').value,
-        password: document.getElementById('password').value
+        username: username,
+        password: password
     };
-    window.sessionStorage.setItem('username',accountInfo.username);
-    window.sessionStorage.setItem('password',accountInfo.password);
+    if (username === null || password === null) {
+        window.sessionStorage.clear();
+    } else {
+        window.sessionStorage.setItem('password', password);
+        window.sessionStorage.setItem('username', username);
+    }
 }
 
 function sendProjectData(){
     editorContainer.syncPages();
+    if (!projectName) {
+        showProjectNameModal();
+        modalOutput("Please enter a project name.");
+        return;
+    }
     req(url = '/', {
         method: 'save-project',
         username: accountInfo.username,

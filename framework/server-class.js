@@ -144,7 +144,7 @@ class Server {
                 }
                 break;
             case 'save-project':
-                if (reqBody.username && reqBody.password && reqBody.project_name && reqBody.project_content && reqBody.projectID) {
+                if (reqBody.username && reqBody.password && reqBody.project_name && reqBody.project_content) {
                     resultContent = await this.dbAccess.saveProject(reqBody.username, reqBody.password, reqBody.project_name, reqBody.project_content, reqBody.projectID);
                 }
                 break;

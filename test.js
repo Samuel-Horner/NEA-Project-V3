@@ -42,11 +42,32 @@ async function tests() {
     await test_case({}); // Blank body
     await test_case({method: 'create-account'}); // Valid method with no data
     await test_case({method: 'blah'}); // Invalid method
+
+    // Load project tests
     await test_case({method: 'load-project', projectID: 0}); // Invalid project ID
     await test_case({method: 'load-project', projectID: -1}); // Invalid project ID
     await test_case({method: 'load-project', projectID: 'abc'}); // Invalid project ID data type
     await test_case({method: 'load-project', projectID: 2}); // Valid project ID but not yet used
     await test_case({method: 'load-project', projectID: 1}); // Valid project ID
+
+    // create account tests
+    await test_case({method: 'create-account', username: '', password: ''});
+    await test_case({method: 'create-account', username: 'abc', password: ''});
+    await test_case({method: 'create-account', username: 'abc', password: '1234'});
+    await test_case({method: 'create-account', username: 1234, password: '12345678'});
+    await test_case({method: 'create-account', username: 'abc', password: '12345678'});
+    await test_case({method: 'create-account', username: 'abc', password: '12345678'}); // Duplicate account
+
+    // Delete account tests
+    await test_case({method: 'delete-account', username: 'abc', password: '12345678'});
+    await test_case({method: 'delete-account', username: 'abc', password: '12345678'}); // deleting an account that has already been deleted
+    await test_case({method: 'delete-account', username: 1234, password: '12345678'});
+    await test_case({method: 'create-account', username: 'test', password: '12345678'})
+    await test_case({method: 'delete-account', username: '', password: ''});
+    await test_case({method: 'delete-account', username: 'test', password: ''});
+    await test_case({method: 'delete-account', username: '', password: '12345678'});
+    await test_case({method: 'delete-account', username: 'test', password: '1234'});
+    await test_case({method: 'delete-account', username: 'test', password: '12345678'});
 
     console.log("Excecuted valid fetch request tests");
 }

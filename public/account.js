@@ -63,6 +63,13 @@ function showDeleteAccountModal(){
     modal.style.display = 'block'; // Shows sign-in modal
 }
 
+function showDeleteProjectModal(projectID){
+    modalContent.innerHTML = `<h1>Delete Project</h1> <hr> <br>
+    <p>Deleting a project will permenantly delete all associated data, are you sure?</p>
+    <button onclick="deleteProject(${projectID});hideModals()">Yes</button> <button onclick="hideModals()">Cancel</button>`;
+    modal.style.display = 'block';
+}
+
 function hideModals() {
     modal.style.display = 'none'; // Hides modal
 }
@@ -80,9 +87,14 @@ async function submitCreateAccount(){
         modalOutput('Passwords do not match.')
         return;
     }
+    let inputed_username = usernameInput.value;
+    if (inputed_username == ''){
+        modalOutput('Please enter a username.');
+        return;
+    }
     const dataToSubmit = {
         method: 'create-account',
-        username: usernameInput.value,
+        username: inputed_username,
         password: passwordInput.value 
     }
     req('/', dataToSubmit).then(result => {
@@ -104,10 +116,20 @@ async function submitCreateAccount(){
 }
 
 function login(){
+    let inputed_username = document.getElementById('username').value;
+    if (inputed_username == ''){
+        modalOutput('Please enter a username.');
+        return;
+    }
+    let inputed_password = document.getElementById('password').value;
+    if (inputed_password == ''){
+        modalOutput('Please enter a password.');
+        return;
+    }
     const dataToSubmit = {
         method: 'log-in',
-        username: document.getElementById('username').value,
-        password: document.getElementById('password').value 
+        username: inputed_username,
+        password: inputed_password 
     }
     req('/', dataToSubmit).then(result => {
         if (result.error){ // If login fails
@@ -126,10 +148,15 @@ function login(){
 }
 
 function deleteAccount(){
+    let inputed_password = document.getElementById('password').value;
+    if (inputed_password == ''){
+        modalOutput('Please enter a password.');
+        return;
+    }
     req(url = '/', {
         method: 'delete-account',
         username: accUsername,
-        password: document.getElementById('password').value
+        password: inputed_password
     }).then(res => {
         if (res.error){
             if (res.error.errno == 0) {
@@ -191,8 +218,7 @@ function deleteProject(projectID){
 
 // Manages account information
 function logout(){
-    saveAccountInfo(null, null)
-    loadProjects();
+    saveAccountInfo(null, null);
     showLoginModal();
 }
 
@@ -201,9 +227,14 @@ function saveAccountInfo(username, password){
     accPassword = password;
     // Could do something with cookies here to make account info
     // persist through pages, but not in project scope.
-    window.sessionStorage.setItem('password', password);
-    window.sessionStorage.setItem('username', username);
-    document.getElementById('page-info').innerText = username;
+    if (username === null || password === null) {
+        window.sessionStorage.clear();
+        document.getElementById('page-info').innerTEXT = "Not signed in.";
+    } else {
+        window.sessionStorage.setItem('password', password);
+        window.sessionStorage.setItem('username', username);
+        document.getElementById('page-info').innerText = username;
+    }
     loadProjects();
 }
 
@@ -211,7 +242,7 @@ function saveAccountInfo(username, password){
 function projectListTemplate(projectName, projectID){
     return `<li class="project-list-li"">
                 <span onclick="editProject(${projectID})" class="project-name">${projectName}</span>
-                <button onclick="deleteProject(${projectID})" class="project-delete-button">Delete</button>
+                <button onclick="showDeleteProjectModal(${projectID})" class="project-delete-button">Delete</button>
             </li>`;
 }
 

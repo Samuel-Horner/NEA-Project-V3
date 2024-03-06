@@ -70,7 +70,11 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
                 return result; // Success - created account
             }
         }).catch((err) => {
-            if (err.errno != 19){console.log(err);} // Dont log 'username already exists' errors
+            if (err.errno == 19){
+                console.log("Username already exists.");
+                return {errno: 0, errdsc: "Username already exists."};
+            }
+            console.log(err); // Dont log 'username already exists' errors
             return err; // Fail - unknown
         });
     }
@@ -173,7 +177,8 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
     saveProject(username, password, projectName, projectContent, projectID){
         return this.login(username, password).then((result) => {
             if (result.username == username) {
-                return this._dbGet('SELECT projectName FROM projectTbl WHERE projectTbl.projectID = $projectID and projectTbl.username = $username;', {
+                if (projectID){
+                    return this._dbGet('SELECT projectName FROM projectTbl WHERE projectTbl.projectID = $projectID and projectTbl.username = $username;', {
                         $projectID: projectID,
                         $username: username
                     }).then(result => {
@@ -186,7 +191,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
                                 });  
                             });
                             return {projectID: projectID}; // Success
-                        } else { // Project does not already exist, or is being forked (same ID different name)
+                        } else { // Project is being forked (same ID different name)
                             return this._dbExec(`INSERT INTO projectTbl(projectName, username) VALUES (
                                 $projectName, $username
                             );`, {
@@ -205,6 +210,24 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
                             });
                         }
                     });
+                } else { // Project does not already exist
+                    return this._dbExec(`INSERT INTO projectTbl(projectName, username) VALUES (
+                        $projectName, $username
+                    );`, {
+                        $projectName: projectName,
+                        $username: username
+                    }).then((result) => {
+                        projectID = result.lastID;
+                        projectContent.forEach((element, index) => {
+                            this._dbExec('INSERT INTO contentTbl VALUES ($projectID, $type, $content);', {
+                                $projectID: projectID,
+                                $type: index,
+                                $content: element
+                            });  
+                        });
+                        return {projectID: projectID}; // Success
+                    });
+                }
             } else {
                 return result; // Fail - Login failed
             }
