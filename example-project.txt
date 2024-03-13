@@ -1,0 +1,66 @@
+precision highp float; // Must specify a float precision
+// Inputs
+uniform float u_time; // Time since start in seconds
+uniform float u_res; // Canvas resolution (u_res * u_res px)
+uniform vec3 u_mouse; // Mouse coords : xy - uv coords (only updates when lmb down), z - lmb;
+// vec3 gl_FragCoord - frag coordinates in world space 
+varying vec3 vColor; // Vertex colors
+
+// This function takes a vec2 representing a complex number and
+// returns its square
+vec2 zSquared(vec2 z) {
+	vec2 ret = vec2(0,0);
+  	ret.x = z.x*z.x-z.y*z.y;
+  	ret.y = z.x*z.y*2.;
+  	return ret; 
+}
+
+// The equation for the mandelbrot
+vec3 mandelbrot(vec2 c, int df) {
+	vec2 z = c;
+  	int j = df;
+  	// Note: As this is compiled to shader assembly directly,
+  	// the only loops that can be used are for loops with a constant
+  	// amount of iterations
+  	for (int i = 0; i < 100; i++) {
+    	z = zSquared(z) + c;
+      	if (z.x * z.x + z.y * z.y > 4.){
+          	j = i;
+        	break;
+        }
+    }
+  	return vec3(1. - float(j)/float(df));
+}
+
+// Entry Point
+void main() {
+    // Normalised Coords
+    vec2 uv = gl_FragCoord.xy / u_res;
+	// Scales and transforms UV coordinates
+  	uv.x = uv.x*2.5-1.75;
+  	uv.y = uv.y*2.5-1.25;
+  	// Output frag color
+    gl_FragColor = vec4(mandelbrot(uv, 100), 1.);
+}
+==================
+attribute vec3 a_position; // Vertex position from vertex array
+attribute vec3 a_color; // Color to be passes in from vertex array and out to fragment
+varying vec3 vColor;
+
+uniform float u_time; // Time since start in seconds
+uniform float u_res; // Canvas resolution (u_res * u_res px)
+uniform vec3 u_mouse; // Mouse coords : xy - uv coords (only updates when lmb down), z - lmb;
+
+// vec4 gl_Position - vertex position
+// Entry point
+void main() {
+    gl_Position = vec4(a_position, 1.); // Sets the vertex position
+    vColor = a_color; // Passes out the vertex color 
+}
+==============
+-1,1,0,0,0,0,
+1,-1,0,0,0,0,
+-1,-1,0,0,0,0,
+1,1,0,0,0,0
+================
+0,1,2,0,1,3

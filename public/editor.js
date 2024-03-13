@@ -84,7 +84,6 @@ function loadProjectPages(){
         }
     }).catch(error => {
         alert(`Error loading project ${projectID}`)
-        loadDefaultPages();
     });   
 }
 
