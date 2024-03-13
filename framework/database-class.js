@@ -291,7 +291,7 @@ class DatabaseAccess extends dbManagement.dbManager { // inherits dbManagement.d
                     if (result.changes != 0){
                         return result; // Success
                     } else {
-                        return {errno: 0, errdsc: 'No project found'}; // Fail - no project found
+                        return {errno: 0, errdsc: 'No project found on account'}; // Fail - no project found
                     }
                 })
             } else {
