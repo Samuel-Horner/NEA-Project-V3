@@ -1,0 +1,354 @@
+PRAGMA foreign_keys = ON;
+Server listening at localhost:8080
+{ method: 'POST', url: '/' }
+[object Object]
+Error 500
+{ method: 'POST', url: '/' }
+{key: }
+Error 500
+{ method: 'GET', url: '/' }
+{ method: 'GET', url: '/' }
+{ method: 'POST', url: '/' }
+
+Error 500
+{ method: 'POST', url: '/' }
+{}
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'create-account' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'blah' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'load-project', projectID: 0 }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'load-project', projectID: -1 }
+SELECT content, type FROM contentTbl WHERE contentTbl.projectID = -1;
+{ method: 'POST', url: '/' }
+{ method: 'load-project', projectID: 'abc' }
+{ method: 'POST', url: '/' }
+{ method: 'load-project', projectID: 2 }
+SELECT content, type FROM contentTbl WHERE contentTbl.projectID = 2;
+{ method: 'POST', url: '/' }
+{ method: 'load-project', projectID: 1 }
+SELECT content, type FROM contentTbl WHERE contentTbl.projectID = 1;
+SELECT projectName FROM projectTbl WHERE projectTbl.projectID = 1;
+{ method: 'POST', url: '/' }
+{ method: 'create-account', username: '', password: '' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'create-account', username: 'abc', password: '' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'create-account', username: 'abc', password: '1234' }
+{ method: 'POST', url: '/' }
+{ method: 'create-account', username: 'abc', password: '12345678' }
+INSERT INTO accountTbl (username, password, salt) VALUES ('abc','d17ed54c6afe539d93da970af88632956bea3c6556a8fbf7e5838dff3905b6a205573a3847bb7bf95ef3eb9ebf4f7fede338daf4ca9271c30b01864428b90045', '867746e9c9e7931202404dae723c4859b841189cdbeae06ffae74348ef0bcd6e03a22e3b9ff31d5ff4b4c1a8a0b94956ad6e30b4042e419d4712c40ee28e8bc0');
+{ method: 'POST', url: '/' }
+{ method: 'create-account', username: 'abc', password: '12345678' }
+Username already exists.
+INSERT INTO accountTbl (username, password, salt) VALUES ('abc','4fd708d77c71cf1be86a2111495675959fb900805c5a52cdd950dd8b05a84ea170bf9031791fd9aa78373e317adabdacf26257662c6d8346bfa924ea618d4ccd', '80602737ae720b134f0b0964f88de1cb15f2e47abd93bc9e7c58df9fed4ae4605f0ca523bd526bbd1e8b15988940e5a83a890e172d8c17086581193f5d7efbb7');
+{ method: 'POST', url: '/' }
+{ method: 'delete-account', username: 'abc', password: '12345678' }
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'abc';
+DELETE FROM accountTbl WHERE accountTbl.username = 'abc';
+DELETE FROM accountTbl WHERE accountTbl.username = 'abc';
+{ method: 'POST', url: '/' }
+{ method: 'create-account', username: 'abc', password: '12345678' }
+INSERT INTO accountTbl (username, password, salt) VALUES ('abc','2e81343e5c5bfaf7fae68d4c249f3f88913c64d8e9ca072059b6c03d101c0fc7d90df8ae8b856fffcd9ccf220ed0658ec9902b5e04cea60becc110acddada3c0', '55a6b9710fef69a056451c780fd47101099e650bc2048b333581627a452f8b2afb850cb3e3e5ae9d7a3554d72c4254ee367e065224360a0232025689c2813139');
+{ method: 'POST', url: '/' }
+{ method: 'delete-account', username: 'abc', password: '12345678' }
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'abc';
+DELETE FROM accountTbl WHERE accountTbl.username = 'abc';
+DELETE FROM accountTbl WHERE accountTbl.username = 'abc';
+{ method: 'POST', url: '/' }
+{ method: 'delete-account', username: 'abc', password: '12345678' }
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'abc';
+{ method: 'POST', url: '/' }
+{ method: 'create-account', username: 'test', password: '12345678' }
+INSERT INTO accountTbl (username, password, salt) VALUES ('test','9f772dd08d4a228faa8de44a1b1a1bb17d581d64283d14b2265c64a5b79900161ce1bdb9fefe84edfb49754d05e951d25ac02be052685d31ac09e417cf86c0c0', '4ff597f3f03dbf5742bfeaab20fff036ee483536e39bd44b23f2e14f074b083273df5663690d0ffdb56f8ea208bf661219533bde743bcb350fadf083b2b1bd3d');
+{ method: 'POST', url: '/' }
+{ method: 'delete-account', username: '', password: '' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'delete-account', username: 'test', password: '' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'delete-account', username: '', password: '12345678' }
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = '';
+{ method: 'POST', url: '/' }
+{ method: 'delete-account', username: 'test', password: '1234' }
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+{ method: 'POST', url: '/' }
+{ method: 'delete-account', username: 'test', password: '12345678' }
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM accountTbl WHERE accountTbl.username = 'test';
+{ method: 'POST', url: '/' }
+{ method: 'create-account', username: 'test', password: '12345678' }
+INSERT INTO accountTbl (username, password, salt) VALUES ('test','02574f57458ad06922dd32a99a316b574dabea07c6442846bf9ffe7ee749fcc3aed534de83387e5a2f6b33c9a6a7e8950bc2e44b2ff596a9ee043340a38f1326', '3bbf9e221b88cf3d3cfd671257e1771aa2ade79ddc4c4ca1e0515b51b715232ca766f20d6dcb27f9832c5f85707ef18546e88fae671a3c7a12edf43c841b577a');
+{ method: 'POST', url: '/' }
+{ method: 'log-in' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'log-in', username: '', password: '' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'log-in', username: 'test', password: '' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'log-in', username: '', password: '12345678' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'log-in', username: 'test', password: '1234' }
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+{ method: 'POST', url: '/' }
+{ method: 'log-in', username: 'test', password: '12345678' }
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+{ method: 'POST', url: '/' }
+{ method: 'delete-account', username: 'test', password: '12345678' }
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM accountTbl WHERE accountTbl.username = 'test';
+{ method: 'POST', url: '/' }
+{ method: 'get-projects' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'get-projects', username: '' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'get-projects', username: 'blah' }
+SELECT projectName, projectID FROM projectTbl WHERE projectTbl.username = 'blah';
+SELECT username FROM accountTbl WHERE accountTbl.username = 'blah'
+{ method: 'POST', url: '/' }
+{ method: 'get-projects', username: 'Example Account' }
+SELECT projectName, projectID FROM projectTbl WHERE projectTbl.username = 'Example Account';
+{ method: 'POST', url: '/' }
+{ method: 'create-account', username: 'test', password: '12345678' }
+INSERT INTO accountTbl (username, password, salt) VALUES ('test','f47fb83e74232d2af73dbfa80eadcc0d3ce3cc2ee8311ae97c8f619eb9426435eb7de7e696c417ff6bfb56ca4d2f55a4cb3e9e9c945a52a7c1f516819230f81e', '048c04c961209c07226b331ee45baaf16fc6202355729331efecd3369eb44ea7f3bcaa1cb8c1a9f012b29600cca14ff62f5f8a4f00f2258dae17742aa237d3b6');
+{ method: 'POST', url: '/' }
+{ method: 'save-project' }
+Error 500
+{ method: 'POST', url: '/' }
+{
+  method: 'save-project',
+  username: '',
+  password: '',
+  project_name: '',
+  project_content: [],
+  projectID: ''
+}
+Error 500
+{ method: 'POST', url: '/' }
+{
+  method: 'save-project',
+  username: '',
+  password: '',
+  project_name: '',
+  project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+  projectID: ''
+}
+Error 500
+{ method: 'POST', url: '/' }
+{
+  method: 'save-project',
+  username: 'test',
+  password: '',
+  project_name: '',
+  project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+  projectID: ''
+}
+Error 500
+{ method: 'POST', url: '/' }
+{
+  method: 'save-project',
+  username: '',
+  password: '12345678',
+  project_name: '',
+  project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+  projectID: ''
+}
+Error 500
+{ method: 'POST', url: '/' }
+{
+  method: 'save-project',
+  username: 'test',
+  password: '12345678',
+  project_name: '',
+  project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+  projectID: ''
+}
+Error 500
+{ method: 'POST', url: '/' }
+{
+  method: 'save-project',
+  username: 'test',
+  password: '12345678',
+  project_name: 'test-project-invalid-content',
+  project_content: 1,
+  projectID: ''
+}
+Error 500
+{ method: 'POST', url: '/' }
+{
+  method: 'save-project',
+  username: 'test',
+  password: '12345678',
+  project_name: 'test-project',
+  project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+  projectID: ''
+}
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+INSERT INTO projectTbl(projectName, username) VALUES (
+                        'test-project', 'test'
+                    );
+INSERT INTO contentTbl VALUES (2, 0, 'abc');
+{ method: 'POST', url: '/' }
+{
+  method: 'save-project',
+  username: 'test',
+  password: '12345678',
+  project_name: 'test-project',
+  project_content: [ 'overwritten!', 'abc', 'abc', 'abc' ],
+  projectID: ''
+}
+INSERT INTO contentTbl VALUES (2, 1, 'abc');
+INSERT INTO contentTbl VALUES (2, 2, 'abc');
+INSERT INTO contentTbl VALUES (2, 3, 'abc');
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+INSERT INTO projectTbl(projectName, username) VALUES (
+                        'test-project', 'test'
+                    );
+INSERT INTO contentTbl VALUES (3, 0, 'overwritten!');
+{ method: 'POST', url: '/' }
+{
+  method: 'delete-project',
+  username: 'test',
+  password: '12345678',
+  projectID: 2
+}
+INSERT INTO contentTbl VALUES (3, 1, 'abc');
+INSERT INTO contentTbl VALUES (3, 2, 'abc');
+INSERT INTO contentTbl VALUES (3, 3, 'abc');
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM projectTbl WHERE projectTbl.projectID = 2 AND projectTbl.username = 'test'
+DELETE FROM projectTbl WHERE projectTbl.projectID = 2 AND projectTbl.username = 'test'
+{ method: 'POST', url: '/' }
+{
+  method: 'delete-project',
+  username: 'test',
+  password: '12345678',
+  projectID: 3
+}
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM projectTbl WHERE projectTbl.projectID = 3 AND projectTbl.username = 'test'
+DELETE FROM projectTbl WHERE projectTbl.projectID = 3 AND projectTbl.username = 'test'
+{ method: 'POST', url: '/' }
+{ method: 'delete-account', username: 'test', password: '12345678' }
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM accountTbl WHERE accountTbl.username = 'test';
+{ method: 'POST', url: '/' }
+{ method: 'create-account', username: 'test', password: '12345678' }
+INSERT INTO accountTbl (username, password, salt) VALUES ('test','201e23ad2f34fc2377f0e50dbdb69e8df8fc58b4e47e9cd8ef26ac9d3e41d452ffda1b2fccd2ffb7c1880941cf334831651f435889469197d299b26042deffcc', '72ab3b1aa04041afbcf8159be5cfa41f799da952cafe1b60aec0babd445777934cf373702cd67c8551aee4d25fbd745f08cc3f968b5dfc71bbf5b973f4caf3d0');
+{ method: 'POST', url: '/' }
+{
+  method: 'delete-project',
+  username: 'test',
+  password: '12345678',
+  projectID: 2
+}
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM projectTbl WHERE projectTbl.projectID = 2 AND projectTbl.username = 'test'
+{ method: 'POST', url: '/' }
+{
+  method: 'delete-project',
+  username: 'test',
+  password: '12345678',
+  projectID: 3
+}
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM projectTbl WHERE projectTbl.projectID = 3 AND projectTbl.username = 'test'
+{ method: 'POST', url: '/' }
+{ method: 'delete-project' }
+Error 500
+{ method: 'POST', url: '/' }
+{ method: 'delete-project', username: '', password: '', projectID: '' }
+Error 500
+{ method: 'POST', url: '/' }
+{
+  method: 'delete-project',
+  username: 'test',
+  password: '',
+  projectID: ''
+}
+Error 500
+{ method: 'POST', url: '/' }
+{
+  method: 'delete-project',
+  username: '',
+  password: '12345678',
+  projectID: ''
+}
+Error 500
+{ method: 'POST', url: '/' }
+{
+  method: 'save-project',
+  username: 'test',
+  password: '12345678',
+  project_name: 'test-project',
+  project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+  projectID: '2'
+}
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+SELECT projectName FROM projectTbl WHERE projectTbl.projectID = '2' and projectTbl.username = 'test';
+INSERT INTO projectTbl(projectName, username) VALUES (
+                                'test-project', 'test'
+                            );
+INSERT INTO contentTbl VALUES (2, 0, 'abc');
+{ method: 'POST', url: '/' }
+{
+  method: 'delete-project',
+  username: '',
+  password: '',
+  projectID: '2'
+}
+Error 500
+{ method: 'POST', url: '/' }
+{
+  method: 'delete-project',
+  username: 'test',
+  password: '12345678',
+  projectID: '3'
+}
+INSERT INTO contentTbl VALUES (2, 2, 'abc');
+INSERT INTO contentTbl VALUES (2, 3, 'abc');
+INSERT INTO contentTbl VALUES (2, 1, 'abc');
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM projectTbl WHERE projectTbl.projectID = 3 AND projectTbl.username = 'test'
+{ method: 'POST', url: '/' }
+{
+  method: 'delete-project',
+  username: 'test',
+  password: '12345678',
+  projectID: '2'
+}
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM projectTbl WHERE projectTbl.projectID = 2 AND projectTbl.username = 'test'
+DELETE FROM projectTbl WHERE projectTbl.projectID = 2 AND projectTbl.username = 'test'
+{ method: 'POST', url: '/' }
+{
+  method: 'delete-project',
+  username: 'test',
+  password: '12345678',
+  projectID: '1'
+}
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM projectTbl WHERE projectTbl.projectID = 1 AND projectTbl.username = 'test'
+{ method: 'POST', url: '/' }
+{ method: 'delete-account', username: 'test', password: '12345678' }
+SELECT password, salt FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM accountTbl WHERE accountTbl.username = 'test';
+DELETE FROM accountTbl WHERE accountTbl.username = 'test';

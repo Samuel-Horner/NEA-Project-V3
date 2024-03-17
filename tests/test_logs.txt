@@ -1,0 +1,412 @@
+http_tests: 
+Excecuted invalid fetch request tests
+{ status: 'ERROR : 500', data: {} }
+{ status: 'ERROR : 500', data: { method: 'create-account' } }
+{ status: 'ERROR : 500', data: { method: 'blah' } }
+Excecuted invalid method tests
+-------
+load_project: 
+{
+  status: 'ERROR : 500',
+  data: { method: 'load-project', projectID: 0 }
+}
+{
+  status: 'ERROR',
+  data: { method: 'load-project', projectID: -1 },
+  result: { errno: 0, errdsc: 'No project found' }
+}
+{
+  status: 'ERROR',
+  data: { method: 'load-project', projectID: 'abc' },
+  result: { errno: 0, errdsc: 'Invalid project ID' }
+}
+{
+  status: 'ERROR',
+  data: { method: 'load-project', projectID: 2 },
+  result: { errno: 0, errdsc: 'No project found' }
+}
+{
+  status: 'SUCCESS',
+  data: { method: 'load-project', projectID: 1 },
+  result: [ 'projectContent', 'projectName' ]
+}
+Excecuted load project tests
+-------
+create_account: 
+{
+  status: 'ERROR : 500',
+  data: { method: 'create-account', username: '', password: '' }
+}
+{
+  status: 'ERROR : 500',
+  data: { method: 'create-account', username: 'abc', password: '' }
+}
+{
+  status: 'ERROR',
+  data: { method: 'create-account', username: 'abc', password: '1234' },
+  result: {
+    errno: 0,
+    errdsc: 'Password must be a minimum of 8 characters long.'
+  }
+}
+{
+  status: 'SUCCESS',
+  data: { method: 'create-account', username: 'abc', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+{
+  status: 'ERROR',
+  data: { method: 'create-account', username: 'abc', password: '12345678' },
+  result: { errno: 0, errdsc: 'Username already exists.' }
+}
+Excecuted create account tests
+{
+  status: 'SUCCESS',
+  data: { method: 'delete-account', username: 'abc', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+Cleaned up
+-------
+delete_account: 
+{
+  status: 'SUCCESS',
+  data: { method: 'create-account', username: 'abc', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+Initialised DB
+{
+  status: 'SUCCESS',
+  data: { method: 'delete-account', username: 'abc', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+{
+  status: 'ERROR',
+  data: { method: 'delete-account', username: 'abc', password: '12345678' },
+  result: { errno: 0, errdsc: 'No account found' }
+}
+{
+  status: 'SUCCESS',
+  data: { method: 'create-account', username: 'test', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+{
+  status: 'ERROR : 500',
+  data: { method: 'delete-account', username: '', password: '' }
+}
+{
+  status: 'ERROR : 500',
+  data: { method: 'delete-account', username: 'test', password: '' }
+}
+{
+  status: 'ERROR',
+  data: { method: 'delete-account', username: '', password: '12345678' },
+  result: { errno: 0, errdsc: 'No account found' }
+}
+{
+  status: 'ERROR',
+  data: { method: 'delete-account', username: 'test', password: '1234' },
+  result: { errno: 0, errdsc: 'Wrong password' }
+}
+{
+  status: 'SUCCESS',
+  data: { method: 'delete-account', username: 'test', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+Excecuted delete account tests
+-------
+log_in: 
+{
+  status: 'SUCCESS',
+  data: { method: 'create-account', username: 'test', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+Initialised DB
+{ status: 'ERROR : 500', data: { method: 'log-in' } }
+{
+  status: 'ERROR : 500',
+  data: { method: 'log-in', username: '', password: '' }
+}
+{
+  status: 'ERROR : 500',
+  data: { method: 'log-in', username: 'test', password: '' }
+}
+{
+  status: 'ERROR : 500',
+  data: { method: 'log-in', username: '', password: '12345678' }
+}
+{
+  status: 'ERROR',
+  data: { method: 'log-in', username: 'test', password: '1234' },
+  result: { errno: 0, errdsc: 'Wrong password' }
+}
+{
+  status: 'SUCCESS',
+  data: { method: 'log-in', username: 'test', password: '12345678' },
+  result: [ 'username' ]
+}
+Excecuted log in tests
+{
+  status: 'SUCCESS',
+  data: { method: 'delete-account', username: 'test', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+Cleaned up
+-------
+get_projects: 
+{ status: 'ERROR : 500', data: { method: 'get-projects' } }
+{
+  status: 'ERROR : 500',
+  data: { method: 'get-projects', username: '' }
+}
+{
+  status: 'ERROR',
+  data: { method: 'get-projects', username: 'blah' },
+  result: { errno: 1, errdsc: 'No account found.' }
+}
+{
+  status: 'SUCCESS',
+  data: { method: 'get-projects', username: 'Example Account' },
+  result: [ '0' ]
+}
+Excecuted get projects tests
+-------
+save_project: 
+{
+  status: 'SUCCESS',
+  data: { method: 'create-account', username: 'test', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+Initialised DB
+{ status: 'ERROR : 500', data: { method: 'save-project' } }
+{
+  status: 'ERROR : 500',
+  data: {
+    method: 'save-project',
+    username: '',
+    password: '',
+    project_name: '',
+    project_content: [],
+    projectID: ''
+  }
+}
+{
+  status: 'ERROR : 500',
+  data: {
+    method: 'save-project',
+    username: '',
+    password: '',
+    project_name: '',
+    project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+    projectID: ''
+  }
+}
+{
+  status: 'ERROR : 500',
+  data: {
+    method: 'save-project',
+    username: 'test',
+    password: '',
+    project_name: '',
+    project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+    projectID: ''
+  }
+}
+{
+  status: 'ERROR : 500',
+  data: {
+    method: 'save-project',
+    username: '',
+    password: '12345678',
+    project_name: '',
+    project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+    projectID: ''
+  }
+}
+{
+  status: 'ERROR : 500',
+  data: {
+    method: 'save-project',
+    username: 'test',
+    password: '12345678',
+    project_name: '',
+    project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+    projectID: ''
+  }
+}
+{
+  status: 'ERROR : 500',
+  data: {
+    method: 'save-project',
+    username: 'test',
+    password: '12345678',
+    project_name: 'test-project-invalid-content',
+    project_content: 1,
+    projectID: ''
+  }
+}
+{
+  status: 'SUCCESS',
+  data: {
+    method: 'save-project',
+    username: 'test',
+    password: '12345678',
+    project_name: 'test-project',
+    project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+    projectID: ''
+  },
+  result: [ 'projectID' ]
+}
+{
+  status: 'SUCCESS',
+  data: {
+    method: 'save-project',
+    username: 'test',
+    password: '12345678',
+    project_name: 'test-project',
+    project_content: [ 'overwritten!', 'abc', 'abc', 'abc' ],
+    projectID: ''
+  },
+  result: [ 'projectID' ]
+}
+Excecuted save project tests
+{
+  status: 'SUCCESS',
+  data: {
+    method: 'delete-project',
+    username: 'test',
+    password: '12345678',
+    projectID: 2
+  },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+{
+  status: 'SUCCESS',
+  data: {
+    method: 'delete-project',
+    username: 'test',
+    password: '12345678',
+    projectID: 3
+  },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+{
+  status: 'SUCCESS',
+  data: { method: 'delete-account', username: 'test', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+Cleaned up
+-------
+delete_project: 
+{
+  status: 'SUCCESS',
+  data: { method: 'create-account', username: 'test', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+Initialised DB
+{
+  status: 'ERROR',
+  data: {
+    method: 'delete-project',
+    username: 'test',
+    password: '12345678',
+    projectID: 2
+  },
+  result: { errno: 0, errdsc: 'No project found on account' }
+}
+{
+  status: 'ERROR',
+  data: {
+    method: 'delete-project',
+    username: 'test',
+    password: '12345678',
+    projectID: 3
+  },
+  result: { errno: 0, errdsc: 'No project found on account' }
+}
+{ status: 'ERROR : 500', data: { method: 'delete-project' } }
+{
+  status: 'ERROR : 500',
+  data: {
+    method: 'delete-project',
+    username: '',
+    password: '',
+    projectID: ''
+  }
+}
+{
+  status: 'ERROR : 500',
+  data: {
+    method: 'delete-project',
+    username: 'test',
+    password: '',
+    projectID: ''
+  }
+}
+{
+  status: 'ERROR : 500',
+  data: {
+    method: 'delete-project',
+    username: '',
+    password: '12345678',
+    projectID: ''
+  }
+}
+{
+  status: 'SUCCESS',
+  data: {
+    method: 'save-project',
+    username: 'test',
+    password: '12345678',
+    project_name: 'test-project',
+    project_content: [ 'abc', 'abc', 'abc', 'abc' ],
+    projectID: '2'
+  },
+  result: [ 'projectID' ]
+}
+{
+  status: 'ERROR : 500',
+  data: {
+    method: 'delete-project',
+    username: '',
+    password: '',
+    projectID: '2'
+  }
+}
+{
+  status: 'ERROR',
+  data: {
+    method: 'delete-project',
+    username: 'test',
+    password: '12345678',
+    projectID: '3'
+  },
+  result: { errno: 0, errdsc: 'No project found on account' }
+}
+{
+  status: 'SUCCESS',
+  data: {
+    method: 'delete-project',
+    username: 'test',
+    password: '12345678',
+    projectID: '2'
+  },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+{
+  status: 'ERROR',
+  data: {
+    method: 'delete-project',
+    username: 'test',
+    password: '12345678',
+    projectID: '1'
+  },
+  result: { errno: 0, errdsc: 'No project found on account' }
+}
+Excecuted delete project tests
+{
+  status: 'SUCCESS',
+  data: { method: 'delete-account', username: 'test', password: '12345678' },
+  result: [ 'stmt', 'lastID', 'changes' ]
+}
+Cleaned up
+-------
