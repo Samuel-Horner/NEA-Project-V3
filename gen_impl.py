@@ -1,4 +1,4 @@
-# This programs generates a markdown document containing the contents of each of the provided files.
+# This scipt generates a markdown document containing the contents of each of the provided files.
 files = ["server.js", 
          "database/db-mgmt.js", 
          "database/init.js", 
@@ -7,7 +7,14 @@ files = ["server.js",
          "public/account.js",
          "public/editor_container.js",
          "public/editor.js",
-         "public/global.js"]
+         "public/global.js",
+         "public/404-page.html",
+         "public/account_page_style.css",
+         "public/account_page.html",
+         "public/editor_style.css",
+         "public/editor.html",
+         "public/global_style.css",
+         "public/index_style.css"]
 
 with open("impl.md", "w") as md:
     for file in files:

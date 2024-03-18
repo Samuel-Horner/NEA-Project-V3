@@ -1301,3 +1301,374 @@ async function req(url = '', data = {}) {
     }
 }
 ```
+
+### public/404-page.html
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404</title>
+</head>
+<style>
+    * {
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+    }
+
+    .fof {
+        size: 10rem;
+    }
+</style>
+<body>
+    <div id="main">
+    	<div class="fof">
+        	<h1>Error 404</h1>
+            <p>Resource not found</p>
+    	</div>
+    </div>
+</body>
+</html>
+```
+
+### public/account_page_style.css
+```
+body {
+    display: flex;
+    flex-direction: column;
+    gap:0;
+}
+
+#content {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    gap: 1rem;
+    flex:1;
+}
+
+#project-list {
+    width: 75%;
+    margin-top: 1rem;
+}
+
+#project-list-ul {
+    list-style: none;
+
+}
+
+.project-list-li {
+    border-style: solid;
+    border-width: 1px;
+    padding: 0.25rem;
+    display: flex;
+}
+
+.project-delete-button {
+    align-self: flex-end;
+}
+
+.project-name {
+    flex-grow: 1;
+    flex-basis: 0;
+    text-align: center;
+    align-self: center;
+}
+
+.project-list-li:hover {
+    border-style: solid;
+    border-width: 3px;
+    padding: 0.25rem;
+}
+
+
+```
+
+### public/account_page.html
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="global_style.css">
+    <link rel="stylesheet" href="account_page_style.css">
+    <script src="global.js"></script>
+    <title>My Account</title>
+</head>
+<body>
+    <div id="header">
+        <span id="page-info">
+            Not logged in.
+        </span>
+        <div id="account-info">
+            <img src="img/account_icon.png" id="account_icon" alt="Account Badge" onclick="showLoginModal()">
+        </div>
+    </div>
+    <div id="content">
+        <div id="login-modal" class="modal">
+            <div id="login-modal-content">
+                
+            </div>
+        </div>
+        <div id="project-list">
+            <ul id="project-list-ul">
+            </ul>
+        </div>
+    </div>
+
+    <script src="account.js"></script>
+</body>
+</html>
+```
+
+### public/editor_style.css
+```
+body {
+    display: flex;
+    flex-direction: column;
+    gap:0;
+}
+
+#content {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+    gap: 1rem;
+    flex:1;
+}
+
+#editor_master_container{
+    flex-grow: 2;
+    width: 60%;
+    text-align: left;
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px;
+    border-style: solid;
+}
+
+#editor_tabs {
+    display: flex;
+    align-items: center;
+    border-bottom-style: solid;
+    border-bottom-color: #dddddd;
+}
+
+.span-button {
+    position: relative;
+    padding:0.25rem;
+    background-color: #f7f7f7;
+    border-top-right-radius: 5px;
+}
+
+.span-button:hover{
+    background-color: #dddddd;
+}
+
+.span-button:active {
+    background-color: white;
+}
+
+#debug_info {
+    position:absolute;
+    left: 1rem;
+    top: 1rem;
+    background-color: white;
+    padding: 0.1rem;
+    text-align: left;
+}
+
+#editor_controls {
+    margin-top: 0.5rem;
+    margin-left: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.CodeMirror {
+    height: 100%;
+    width: 100%;
+}
+#glScreen{
+    border: 1px;
+    border-style: solid;
+    width: 40vw;
+}
+```
+
+### public/editor.html
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="lib/codemirror.css">
+    <link rel="stylesheet" href="global_style.css">
+    <link rel="stylesheet" href="editor_style.css">
+    <script src="lib/codemirror.js"></script>
+    <script src="lib/clike.js"></script>
+    <script src="lib/matchbrackets.js"></script>
+    <script src="engine.js"></script>
+    <script src="editor_container.js"></script>
+    <script src="global.js"></script>
+    <title>Editor</title>
+</head>
+<body>
+    <div id="header">
+        <span id="page-info">
+            Untitled
+        </span>
+        <span id="account-info">
+            <a href="account_page.html">
+                <img src="img/account_icon.png" id="account_icon" alt="Account Badge">
+            </a>
+        </span>
+    </div>
+    <div id="content">
+        <div id="editor_controls" class="flex_item">
+            <canvas id="glScreen"></canvas>
+            <div id="debug_info">
+                <p id="performance_info"></p>
+                <p id="uniform_info"></p>
+            </div>
+            <div>
+                <button onclick="runCode()">Run Code</button>
+                <button onclick="debugInfo()">Info</button>
+            </div>
+            <div class="slider-container">
+                <input type="range" class="slider" id="resolution_slider" min="100" max="2000" value="500" oninput="resChange()">
+                <p class="inline-label" id="resolution_display">500 px</p>
+            </div>
+            <div>
+                <button onclick="saveCode()">Save Code</button>
+                <button onclick="saveCodeAs()">Save As</button>
+            </div>
+        </div>
+        <div id="editor_master_container" class="flex_item"> 
+            <div id="editor_tabs">
+                <span class="span-button no-highlight" onclick="fragmentTab()">Fragment</span>
+                <span class="span-button no-highlight" onclick="vertexTab()">Vertex</span>
+                <span class="span-button no-highlight" onclick="verticesTab()">Vertices</span>
+                <span class="span-button no-highlight" onclick="indicesTab()">Indices</span>
+            </div>
+            <div id="editor_container"></div>
+        </div>
+    </div>
+    <div id="login-modal" class=".modal">
+        <div id="login-modal-content">
+            
+        </div>
+    </div>
+    <script src="editor.js"></script>
+</body>
+</html>
+```
+
+### public/global_style.css
+```
+* { 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+button {
+    padding: 0.1rem;
+}
+
+body{
+    color:black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1em;
+    text-align: center;
+    gap: 1rem;
+    min-height:100vh;
+}
+
+.no-highlight{
+    user-select: none;
+    -moz-user-select: none; 
+    -webkit-text-select: none; 
+    -webkit-user-select: none; 
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+}  /* https://www.w3schools.com/howto/howto_css_modals.asp */
+
+#login-modal-content {
+    background-color: white;
+    position: absolute;
+    top:50%;
+    left:50%;
+    margin:auto;
+    transform: translate(-50%, -50%);
+    width:50%;
+    padding: 1rem;
+    border-radius: 1rem;
+    border-style: solid;
+    border-color: black;
+    border-width: 0.1rem;
+}
+
+#modal_output {
+    padding: 1rem;
+    color: red;
+}
+
+
+#header {
+    padding: 0.5rem;
+    background-color: gray;
+    display: flex;
+    text-align: right;
+}
+
+#account_icon {
+    align-self:flex-end;
+    width: 2rem;
+}
+
+#page-info {
+    align-self: center;
+    flex-grow: 1;
+    flex-basis: 0;
+    text-align: center;
+}
+```
+
+### public/index_style.css
+```
+#content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    padding-top: 2rem;
+}
+
+#glScreen{
+    border: 1px;
+    border-style: solid;
+    height: 30vw;
+}
+
+#header {
+    padding: 0.5rem;
+    background-color: gray;
+}
+```
