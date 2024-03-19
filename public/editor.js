@@ -206,7 +206,7 @@ function login(){
     const dataToSubmit = {
         method: 'log-in',
         username: inputed_username,
-        password: inputed_username 
+        password: inputed_password
     }
     req('/', dataToSubmit).then(result => {
         if (result.error){ // If login fails
